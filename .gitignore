@@ -14,3 +14,4 @@ analysis/site_libs
 .quarto
 README.Rmd
 data_raw/
+variant_calling/alignment/
