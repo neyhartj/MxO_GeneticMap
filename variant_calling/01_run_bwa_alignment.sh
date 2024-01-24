@@ -8,7 +8,7 @@
 #SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
 #SBATCH -n 32   # 8 processor core(s) per node X 2 threads per core
-#SBATCH --mem=   # maximum memory per node
+#SBATCH --mem=8G   # maximum memory per node
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN,END,FAIL
 
@@ -73,7 +73,8 @@ SAMPLENAMES=$(cut -d \t -f 1 $SAMPLEFILE)
 # Iterate over the sample names
 for SAMPLE in $SAMPLENAMES; do
   # Create a RG tag
-  RG=\"@RG\tID:$SAMPLE\tSM:$SAMPLE\"
+  RG="@RG\tID:$SAMPLE\tSM:$SAMPLE"
+
   # Find the FASTQ files in the input directory that match the sample name
   SAMPLEFASTQS=$(find $FASTQDIR -name "*$SAMPLE*")
 
