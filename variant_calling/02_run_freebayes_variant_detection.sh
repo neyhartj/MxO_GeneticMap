@@ -3,7 +3,7 @@
 # SLURM parameters
 # job standard output will go to the file slurm-%j.out (where %j is the job ID)
 
-#SBATCH --job-name="MxO RAPiD BWA alignment"
+#SBATCH --job-name="MxO RAPiD freebayes variant calling"
 #SBATCH -p short
 #SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
@@ -27,8 +27,8 @@ set -u
 set -o pipefail
 
 # Load the modules
-module load bwa
 module load samtools
+module load freebayes
 
 #####################
 ## Set variables
@@ -53,6 +53,9 @@ DBPREFIXOXY=/project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vacci
 # Directory to output alignments
 ALIGNDIR=$WD/variant_calling/alignment/
 
+# Directory to output variants
+VARIANTDIR=$WD/variant_calling/variants/
+
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 
@@ -67,30 +70,19 @@ NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 # Change working directory
 cd $WD
 
-# Use the sample file to create a vector of sample names
-SAMPLENAMES=$(cut -d \t -f 1 $SAMPLEFILE)
+# List all of the alignment files in the alignment directory
+# First find those aligned to STEVENS
+ALIGNMENTFILESSTE=$(find $VARIANTDIR -name "*STEVENS_alignment.bam")
+# Next find those aligned to OXY
+ALIGNMENTFILESOXY=$(find $VARIANTDIR -name "*OXY_alignment.bam")
 
-# Iterate over the sample names
-for SAMPLE in $SAMPLENAMES; do
-  # Create a RG tag
-  RG="@RG\tID:$SAMPLE\tSM:$SAMPLE"
 
-  # Find the FASTQ files in the input directory that match the sample name
-  SAMPLEFASTQS=$(find $FASTQDIR -name "*$SAMPLE*")
+## Run variant calling for alignment to STEVENS
+# Ouput file
+OUTPUT=$VARIANTDIR/MXO_STEVENS_ref_variants.vcf
+freebayes -f $DBPREFIXSTEVENS $ALIGNMENTFILESSTE > $OUTPUT
 
-  ## ALIGNMENT TO STEVENS
-  # Create the output SAM file name
-  OUTPUT=$ALIGNDIR/${SAMPLE}_STEVENS_alignment.bam
-  # Run the alignment
-  bwa mem -t $NTHREADS -R $RG $DBPREFIXSTEVENS $SAMPLEFASTQS | samtools view -b -o $OUTPUT -
-  # Sort
-  samtools sort -O bam -o $OUTPUT -@ $NTHREADS $OUTPUT
-
-  ## ALIGNMENT TO OXY
-  OUTPUT=$ALIGNDIR/${SAMPLE}_OXY_alignment.bam
-  # Run the alignment
-  bwa mem -t $NTHREADS -R $RG $DBPREFIXOXY $SAMPLEFASTQS | samtools view -b -o $OUTPUT -
-  # Sort
-  samtools sort -O bam -o $OUTPUT -@ $NTHREADS $OUTPUT
-
-done
+## Run variant calling for alignment to OXY
+# Ouput file
+OUTPUT=$VARIANTDIR/MXO_OXY_ref_variants.vcf
+freebayes -f $DBPREFIXOXY $ALIGNMENTFILESOXY > $OUTPUT
