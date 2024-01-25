@@ -72,9 +72,9 @@ cd $WD
 
 # List all of the alignment files in the alignment directory
 # First find those aligned to STEVENS
-ALIGNMENTFILESSTE=$(find $VARIANTDIR -name "*STEVENS_alignment.bam")
+ALIGNMENTFILESSTE=$(find $ALIGNDIR -name "*STEVENS_alignment.bam")
 # Next find those aligned to OXY
-ALIGNMENTFILESOXY=$(find $VARIANTDIR -name "*OXY_alignment.bam")
+ALIGNMENTFILESOXY=$(find $ALIGNDIR -name "*OXY_alignment.bam")
 
 
 ## Run variant calling for alignment to STEVENS
