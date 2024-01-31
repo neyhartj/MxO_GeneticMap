@@ -48,7 +48,7 @@ SAMPLEFILE=$WD/data/mxo_rapid15k_sample_list.txt
 # Prefix of the indexed Stevens reference genome
 DBPREFIXSTEVENS=/project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta
 # Prefix of the indexed oxycoccos reference genome
-DBPREFIXOXY=/project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta
+DBPREFIXOXY=/project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta
 
 # Directory to output alignments
 ALIGNDIR=$WD/variant_calling/alignment/
