@@ -19,16 +19,16 @@ library(statgenIBD)
 library(onemap)
 
 # Load population information
-pop_metadata <- read_csv("Data/population_metadata.csv")
+pop_metadata <- read_csv("data/population_metadata.csv")
 
 
 # Load the VCF file -------------------------------------------------------
 
-vcf_in <- read.vcfR(file = "Data/Final_DP10_Corrected_VAC_155005_SNPs_biallelic_mxos1_qual.recode.vcf.gz")
+vcf_in <- read.vcfR(file = "data/Final_DP10_Corrected_VAC_155005_SNPs_biallelic_mxos1_qual.recode.vcf.gz")
 
 # Get snp info
 snp_info <- vcf_in@fix %>%
-  as.data.frame() %>%
+  as.data.frame(.) %>%
   mutate(chrom_num = parse_number(CHROM),
          chrom_num = str_pad(chrom_num, 2, "left", "0"),
          marker = paste0("S", chrom_num, "_", POS)) %>%
