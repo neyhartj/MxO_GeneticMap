@@ -56,6 +56,9 @@ ALIGNDIR=$WD/variant_calling/alignment/
 # Directory to output variants
 VARIANTDIR=$WD/variant_calling/variants/
 
+# Path to BED file containing the RAPiD Flex-Seq probes
+PROBEBED=/project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/vm_flexseq_probes.bed
+
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 
@@ -81,7 +84,7 @@ ALIGNMENTFILESSTE=$(find $ALIGNDIR -name "*STEVENS_alignment.bam")
 ALIGNMENTFILESOXY=$(find $ALIGNDIR -name "*OXY_alignment.bam")
 
 
-if [ $REF = "STEVENS" ]; 
+if [ $REF = "STEVENS" ];
 then
 
 	echo -e "Variant calling using the STEVENS alignment...\n"
@@ -92,7 +95,7 @@ then
 	# freebayes -f $DBPREFIXSTEVENS $ALIGNMENTFILESSTE > $OUTPUT
 	# Use parallelization
 	freebayes-parallel <(fasta_generate_regions.py $DBPREFIXSTEVENS 100000) $SLURM_JOB_CPUS_PER_NODE \
-		-f $DBPREFIXSTEVENS $ALIGNMENTFILESSTE > $OUTPUT
+		-f $DBPREFIXSTEVENS --min-alternate-count 10 --use-best-n-alleles 2 -t $PROBEBED $ALIGNMENTFILESSTE > $OUTPUT
 
 elif [ $REF = "OXY" ];
 then
@@ -106,6 +109,6 @@ then
 
 	# Use parallelization
 	freebayes-parallel <(fasta_generate_regions.py $DBPREFIXOXY 100000) $SLURM_JOB_CPUS_PER_NODE \
-	        -f $DBPREFIXOXY $ALIGNMENTFILESOXY > $OUTPUT
+	  -f $DBPREFIXOXY --min-alternate-count 10 --use-best-n-alleles 2 -t $PROBEBED $ALIGNMENTFILESOXY > $OUTPUT
 
 fi
