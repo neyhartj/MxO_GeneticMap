@@ -1,0 +1,1221 @@
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 653140 sequences (67926560 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1132354, 443, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (163, 197, 231)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (27, 367)
+[M::mem_pestat] mean and std.dev: (197.69, 47.53)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 435)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (99, 143, 162)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 288)
+[M::mem_pestat] mean and std.dev: (114.15, 72.08)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 402)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 756.313 CPU sec, 24.856 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 239516, 93, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (163, 197, 231)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (27, 367)
+[M::mem_pestat] mean and std.dev: (197.68, 47.52)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 435)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 137, 162)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 450)
+[M::mem_pestat] mean and std.dev: (119.92, 81.11)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 594)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 653140 reads in 167.245 CPU sec, 5.634 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA01\tSM:VAC_155005_P010_WA01 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA01_i5-53_i7-59_S1305_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA01_i5-53_i7-59_S1305_L002_R2_001.fastq.gz
+[main] Real time: 40.550 sec; CPU: 930.712 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 653140 sequences (67926560 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (42, 1079666, 254, 0)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (163, 197, 231)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (27, 367)
+[M::mem_pestat] mean and std.dev: (197.45, 48.02)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 435)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (8, 111, 895)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2669)
+[M::mem_pestat] mean and std.dev: (211.60, 353.47)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3556)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 677.597 CPU sec, 22.845 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (12, 227967, 63, 0)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (163, 197, 231)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (27, 367)
+[M::mem_pestat] mean and std.dev: (197.42, 47.99)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 435)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 111, 895)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2645)
+[M::mem_pestat] mean and std.dev: (289.88, 377.22)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3520)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 653140 reads in 151.577 CPU sec, 5.247 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA01\tSM:VAC_155005_P010_WA01 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA01_i5-53_i7-59_S1305_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA01_i5-53_i7-59_S1305_L002_R2_001.fastq.gz
+[main] Real time: 36.699 sec; CPU: 836.266 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1608140 sequences (167246560 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1218881, 188, 3)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 373)
+[M::mem_pestat] mean and std.dev: (203.31, 48.02)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 441)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 162, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 539)
+[M::mem_pestat] mean and std.dev: (139.40, 87.55)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 682)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 656.790 CPU sec, 23.375 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 635144, 123, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 373)
+[M::mem_pestat] mean and std.dev: (203.37, 48.04)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 441)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 162, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 723)
+[M::mem_pestat] mean and std.dev: (148.45, 103.97)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 958)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1608140 reads in 373.994 CPU sec, 12.480 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA02\tSM:VAC_155005_P010_WA02 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA02_i5-53_i7-27_S1306_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA02_i5-53_i7-27_S1306_L002_R1_001.fastq.gz
+[main] Real time: 44.603 sec; CPU: 1037.673 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1151843, 131, 68)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 373)
+[M::mem_pestat] mean and std.dev: (203.17, 48.53)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 441)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 258, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2538.87, 3199.04)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::process] read 1608140 sequences (167246560 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 626.438 CPU sec, 22.770 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 599857, 89, 28)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 373)
+[M::mem_pestat] mean and std.dev: (203.21, 48.56)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 441)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (14, 874, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21098)
+[M::mem_pestat] mean and std.dev: (2238.45, 3030.19)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28126)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1608140 reads in 354.455 CPU sec, 11.802 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA02\tSM:VAC_155005_P010_WA02 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA02_i5-53_i7-27_S1306_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA02_i5-53_i7-27_S1306_L002_R1_001.fastq.gz
+[main] Real time: 42.113 sec; CPU: 987.446 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1507740 sequences (156804960 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 1230662, 251, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (171, 206, 240)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 378)
+[M::mem_pestat] mean and std.dev: (205.88, 48.25)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 447)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 143, 162)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 450)
+[M::mem_pestat] mean and std.dev: (122.92, 79.89)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 594)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 632.949 CPU sec, 22.927 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 601293, 129, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (171, 205, 240)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 378)
+[M::mem_pestat] mean and std.dev: (205.78, 48.28)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 447)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 159, 163)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (4, 269)
+[M::mem_pestat] mean and std.dev: (124.13, 69.78)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 403)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1507740 reads in 339.480 CPU sec, 11.339 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA03\tSM:VAC_155005_P010_WA03 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA03_i5-53_i7-82_S1307_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA03_i5-53_i7-82_S1307_L002_R1_001.fastq.gz
+[main] Real time: 42.681 sec; CPU: 978.967 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1507740 sequences (156804960 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1161157, 217, 59)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (171, 206, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 381)
+[M::mem_pestat] mean and std.dev: (205.79, 48.96)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 451)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 216, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2145.58, 3111.71)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 3076924 reads in 620.231 CPU sec, 22.749 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 567159, 88, 26)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (171, 206, 240)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (33, 378)
+[M::mem_pestat] mean and std.dev: (205.67, 48.95)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 447)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (111, 874, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20904)
+[M::mem_pestat] mean and std.dev: (2532.85, 3116.98)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27835)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1507740 reads in 327.920 CPU sec, 10.951 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA03\tSM:VAC_155005_P010_WA03 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA03_i5-53_i7-82_S1307_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA03_i5-53_i7-82_S1307_L002_R1_001.fastq.gz
+[main] Real time: 41.660 sec; CPU: 954.956 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1300562 sequences (135258448 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (2, 1227174, 186, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 374)
+[M::mem_pestat] mean and std.dev: (204.18, 48.06)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 442)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 162, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 723)
+[M::mem_pestat] mean and std.dev: (133.63, 96.20)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 958)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 669.226 CPU sec, 23.355 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 517284, 83, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 374)
+[M::mem_pestat] mean and std.dev: (204.14, 48.19)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 442)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (9, 159, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 741)
+[M::mem_pestat] mean and std.dev: (127.04, 102.22)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 985)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1300562 reads in 302.944 CPU sec, 10.128 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA04\tSM:VAC_155005_P010_WA04 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA04_i5-53_i7-7_S1308_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA04_i5-53_i7-7_S1308_L002_R1_001.fastq.gz
+[main] Real time: 41.922 sec; CPU: 978.894 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1300562 sequences (135258448 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (2, 1160606, 156, 63)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (204.02, 48.61)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (24, 874, 7037)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21063)
+[M::mem_pestat] mean and std.dev: (2137.32, 2949.49)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28076)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 3076924 reads in 634.618 CPU sec, 22.799 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 488932, 66, 30)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (203.97, 48.72)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (4, 111, 895)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2677)
+[M::mem_pestat] mean and std.dev: (273.46, 384.79)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3568)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1300562 reads in 288.767 CPU sec, 9.727 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA04\tSM:VAC_155005_P010_WA04 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA04_i5-53_i7-7_S1308_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA04_i5-53_i7-7_S1308_L002_R1_001.fastq.gz
+[main] Real time: 40.294 sec; CPU: 930.259 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1321522 sequences (137438288 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1248997, 245, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (204.06, 48.06)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (99, 137, 191)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 375)
+[M::mem_pestat] mean and std.dev: (125.27, 80.96)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 467)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 653.982 CPU sec, 23.001 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 535816, 94, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 204, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (36, 371)
+[M::mem_pestat] mean and std.dev: (204.02, 48.06)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 438)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 137, 212)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 416)
+[M::mem_pestat] mean and std.dev: (133.74, 84.25)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 518)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1321522 reads in 302.772 CPU sec, 10.129 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA05\tSM:VAC_155005_P010_WA05 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA05_i5-53_i7-38_S1309_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA05_i5-53_i7-38_S1309_L002_R1_001.fastq.gz
+[main] Real time: 41.495 sec; CPU: 963.346 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1321522 sequences (137438288 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1178810, 197, 54)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 203, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (203.69, 48.60)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 254, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2759.89, 3285.77)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 3076924 reads in 636.647 CPU sec, 23.243 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 505612, 73, 20)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (203.70, 48.60)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (29, 894, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21068)
+[M::mem_pestat] mean and std.dev: (2752.21, 3222.87)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28081)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1321522 reads in 294.938 CPU sec, 9.830 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA05\tSM:VAC_155005_P010_WA05 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA05_i5-53_i7-38_S1309_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA05_i5-53_i7-38_S1309_L002_R1_001.fastq.gz
+[main] Real time: 40.225 sec; CPU: 938.079 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1242211, 277, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 206, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.55, 48.25)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 160, 191)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 353)
+[M::mem_pestat] mean and std.dev: (143.73, 82.26)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 473)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 1814804 sequences (188739616 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 630.584 CPU sec, 22.611 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 732042, 127, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 206, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.57, 48.28)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 160, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 539)
+[M::mem_pestat] mean and std.dev: (145.15, 92.64)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 682)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1814804 reads in 406.638 CPU sec, 13.508 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA06\tSM:VAC_155005_P010_WA06 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA06_i5-53_i7-74_S1310_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA06_i5-53_i7-74_S1310_L002_R2_001.fastq.gz
+[main] Real time: 44.128 sec; CPU: 1043.677 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (3, 1164080, 188, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 206, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.39, 48.91)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (57, 258, 7041)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21009)
+[M::mem_pestat] mean and std.dev: (2170.48, 3028.10)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27993)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 1814804 sequences (188739616 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 638.909 CPU sec, 23.207 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 685889, 134, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 207, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.41, 48.90)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (109, 874, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20908)
+[M::mem_pestat] mean and std.dev: (2547.75, 3158.65)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27841)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1814804 reads in 414.352 CPU sec, 13.814 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA06\tSM:VAC_155005_P010_WA06 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA06_i5-53_i7-74_S1310_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA06_i5-53_i7-74_S1310_L002_R2_001.fastq.gz
+[main] Real time: 44.726 sec; CPU: 1059.906 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1297858, 198, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 205, 239)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 377)
+[M::mem_pestat] mean and std.dev: (204.97, 48.11)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 446)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 160, 215)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 425)
+[M::mem_pestat] mean and std.dev: (149.39, 79.86)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 530)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 2276208 sequences (236725632 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 566.194 CPU sec, 20.640 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 958097, 148, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 205, 239)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 377)
+[M::mem_pestat] mean and std.dev: (205.01, 48.12)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 446)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 160, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 539)
+[M::mem_pestat] mean and std.dev: (144.05, 78.15)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 682)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 2276208 reads in 454.245 CPU sec, 15.098 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA07\tSM:VAC_155005_P010_WA07 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA07_i5-53_i7-77_S1311_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA07_i5-53_i7-77_S1311_L002_R1_001.fastq.gz
+[main] Real time: 44.533 sec; CPU: 1027.600 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1212706, 151, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 205, 239)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 377)
+[M::mem_pestat] mean and std.dev: (204.77, 48.77)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 446)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (111, 895, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20904)
+[M::mem_pestat] mean and std.dev: (2827.80, 3181.77)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27835)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 2276208 sequences (236725632 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 594.302 CPU sec, 21.262 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 896056, 128, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 205, 239)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 377)
+[M::mem_pestat] mean and std.dev: (204.86, 48.81)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 446)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (111, 896, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20904)
+[M::mem_pestat] mean and std.dev: (3243.35, 3229.70)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27835)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 2276208 reads in 472.719 CPU sec, 15.614 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA07\tSM:VAC_155005_P010_WA07 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA07_i5-53_i7-77_S1311_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA07_i5-53_i7-77_S1311_L002_R1_001.fastq.gz
+[main] Real time: 45.004 sec; CPU: 1073.847 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 916092 sequences (95273568 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 1254205, 205, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (166, 200, 234)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (30, 370)
+[M::mem_pestat] mean and std.dev: (200.60, 47.86)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 438)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (108, 137, 143)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (38, 213)
+[M::mem_pestat] mean and std.dev: (134.41, 19.31)
+[M::mem_pestat] low and high boundaries for proper pairs: (3, 248)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 642.533 CPU sec, 22.120 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 371709, 79, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (166, 200, 234)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (30, 370)
+[M::mem_pestat] mean and std.dev: (200.42, 47.88)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 438)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (111, 137, 159)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (15, 255)
+[M::mem_pestat] mean and std.dev: (129.24, 35.35)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 303)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 916092 reads in 205.194 CPU sec, 6.856 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA08\tSM:VAC_155005_P010_WA08 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA08_i5-53_i7-16_S1312_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA08_i5-53_i7-16_S1312_L002_R1_001.fastq.gz
+[main] Real time: 37.603 sec; CPU: 854.621 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 916092 sequences (95273568 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1179054, 161, 71)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (165, 200, 234)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (27, 372)
+[M::mem_pestat] mean and std.dev: (200.37, 48.53)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 441)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (74, 874, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20978)
+[M::mem_pestat] mean and std.dev: (2496.76, 3136.83)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27946)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 3076924 reads in 642.292 CPU sec, 22.060 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 349848, 60, 9)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (165, 200, 234)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (27, 372)
+[M::mem_pestat] mean and std.dev: (200.21, 48.54)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 441)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (42, 874, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21042)
+[M::mem_pestat] mean and std.dev: (2127.87, 2938.78)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28042)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 916092 reads in 204.968 CPU sec, 6.951 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA08\tSM:VAC_155005_P010_WA08 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA08_i5-53_i7-16_S1312_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA08_i5-53_i7-16_S1312_L002_R1_001.fastq.gz
+[main] Real time: 36.889 sec; CPU: 853.880 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (3, 1244067, 231, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 207, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.78, 48.19)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (115, 143, 214)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 412)
+[M::mem_pestat] mean and std.dev: (145.90, 85.15)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 511)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 1770824 sequences (184165696 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 660.226 CPU sec, 23.821 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 714395, 139, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 207, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.72, 48.15)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 143, 253)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 539)
+[M::mem_pestat] mean and std.dev: (155.88, 98.08)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 682)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1770824 reads in 413.439 CPU sec, 13.723 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA09\tSM:VAC_155005_P010_WA09 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA09_i5-53_i7-36_S1313_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA09_i5-53_i7-36_S1313_L002_R1_001.fastq.gz
+[main] Real time: 45.409 sec; CPU: 1080.059 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (2, 1192319, 187, 71)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 207, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.61, 48.67)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (108, 258, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20910)
+[M::mem_pestat] mean and std.dev: (2557.17, 3202.17)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27844)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::process] read 1770824 sequences (184165696 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 598.689 CPU sec, 21.796 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 684718, 89, 33)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (172, 207, 241)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 379)
+[M::mem_pestat] mean and std.dev: (206.58, 48.61)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 448)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (109, 254, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20908)
+[M::mem_pestat] mean and std.dev: (2205.21, 3047.53)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27841)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1770824 reads in 369.466 CPU sec, 12.340 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA09\tSM:VAC_155005_P010_WA09 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA09_i5-53_i7-36_S1313_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA09_i5-53_i7-36_S1313_L002_R1_001.fastq.gz
+[main] Real time: 41.159 sec; CPU: 974.685 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1537442 sequences (159893968 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1144835, 396, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 235)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 369)
+[M::mem_pestat] mean and std.dev: (202.13, 47.88)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 436)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 160, 212)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 416)
+[M::mem_pestat] mean and std.dev: (143.07, 90.03)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 518)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 737.415 CPU sec, 25.900 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 571108, 214, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 235)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 369)
+[M::mem_pestat] mean and std.dev: (202.03, 47.90)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 436)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 147, 191)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 537)
+[M::mem_pestat] mean and std.dev: (131.31, 90.07)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 710)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1537442 reads in 398.992 CPU sec, 13.305 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA10\tSM:VAC_155005_P010_WA10 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA10_i5-53_i7-54_S1314_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA10_i5-53_i7-54_S1314_L002_R2_001.fastq.gz
+[main] Real time: 47.101 sec; CPU: 1142.791 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 1091058, 218, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (29, 374)
+[M::mem_pestat] mean and std.dev: (201.89, 48.42)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 443)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 111, 895)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2645)
+[M::mem_pestat] mean and std.dev: (176.99, 279.42)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3520)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 1537442 sequences (159893968 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 659.264 CPU sec, 24.004 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (2, 544331, 130, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (29, 374)
+[M::mem_pestat] mean and std.dev: (201.81, 48.42)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 443)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 111, 895)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 2645)
+[M::mem_pestat] mean and std.dev: (181.81, 273.45)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 3520)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1537442 reads in 355.843 CPU sec, 11.931 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA10\tSM:VAC_155005_P010_WA10 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA10_i5-53_i7-54_S1314_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA10_i5-53_i7-54_S1314_L002_R2_001.fastq.gz
+[main] Real time: 43.454 sec; CPU: 1021.611 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 1260789, 307, 1)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 372)
+[M::mem_pestat] mean and std.dev: (202.43, 47.97)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 440)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 159, 163)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (4, 269)
+[M::mem_pestat] mean and std.dev: (123.41, 69.16)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 400)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::process] read 1912398 sequences (198889392 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 617.285 CPU sec, 22.108 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 782542, 166, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 372)
+[M::mem_pestat] mean and std.dev: (202.48, 47.95)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 440)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 143, 191)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 537)
+[M::mem_pestat] mean and std.dev: (127.47, 91.61)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 710)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1912398 reads in 416.499 CPU sec, 13.854 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA11\tSM:VAC_155005_P010_WA11 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA11_i5-53_i7-25_S1315_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA11_i5-53_i7-25_S1315_L002_R1_001.fastq.gz
+[main] Real time: 44.165 sec; CPU: 1040.212 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 1186430, 199, 119)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (29, 374)
+[M::mem_pestat] mean and std.dev: (202.11, 48.66)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 443)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 254, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2346.77, 3093.51)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::process] read 1912398 sequences (198889392 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 615.571 CPU sec, 22.300 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 736178, 145, 93)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 372)
+[M::mem_pestat] mean and std.dev: (202.23, 48.58)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 440)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 227, 6256)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 18728)
+[M::mem_pestat] mean and std.dev: (2012.68, 2946.49)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 24964)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1912398 reads in 412.877 CPU sec, 13.779 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA11\tSM:VAC_155005_P010_WA11 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA11_i5-53_i7-25_S1315_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA11_i5-53_i7-25_S1315_L002_R1_001.fastq.gz
+[main] Real time: 43.814 sec; CPU: 1035.094 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1598126 sequences (166205104 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1218096, 248, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (34, 374)
+[M::mem_pestat] mean and std.dev: (204.29, 48.05)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 442)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (18, 143, 261)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 747)
+[M::mem_pestat] mean and std.dev: (134.26, 101.25)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 990)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 688.653 CPU sec, 24.634 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 632055, 109, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (170, 204, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (36, 371)
+[M::mem_pestat] mean and std.dev: (204.27, 48.05)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 438)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (108, 142, 212)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 420)
+[M::mem_pestat] mean and std.dev: (131.07, 85.43)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 524)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1598126 reads in 390.374 CPU sec, 13.020 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA12\tSM:VAC_155005_P010_WA12 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA12_i5-53_i7-23_S1316_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA12_i5-53_i7-23_S1316_L002_R1_001.fastq.gz
+[main] Real time: 45.842 sec; CPU: 1085.793 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1155257, 201, 26)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (204.12, 48.60)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 258, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2566.37, 3154.10)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::process] read 1598126 sequences (166205104 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 634.555 CPU sec, 23.097 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 599656, 91, 11)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (169, 204, 238)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 376)
+[M::mem_pestat] mean and std.dev: (204.11, 48.63)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 445)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (106, 895, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20914)
+[M::mem_pestat] mean and std.dev: (2944.53, 3271.27)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27850)
+[M::mem_pestat] analyzing insert size distribution for orientation RR...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] skip orientation RF
+[M::mem_pestat] skip orientation RR
+[M::mem_process_seqs] Processed 1598126 reads in 362.812 CPU sec, 12.308 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WA12\tSM:VAC_155005_P010_WA12 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA12_i5-53_i7-23_S1316_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WA12_i5-53_i7-23_S1316_L002_R1_001.fastq.gz
+[main] Real time: 42.155 sec; CPU: 1004.059 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1285794 sequences (133722576 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1202973, 196, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 201, 235)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 371)
+[M::mem_pestat] mean and std.dev: (201.10, 47.82)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 439)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (16, 143, 204)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 580)
+[M::mem_pestat] mean and std.dev: (119.42, 98.88)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 768)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 677.943 CPU sec, 23.546 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 501034, 68, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 201, 235)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (31, 371)
+[M::mem_pestat] mean and std.dev: (201.18, 47.74)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 439)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (108, 143, 297)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 675)
+[M::mem_pestat] mean and std.dev: (137.00, 98.27)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 864)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1285794 reads in 304.880 CPU sec, 10.229 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WB01\tSM:VAC_155005_P010_WB01 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB01_i5-53_i7-31_S1317_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB01_i5-53_i7-31_S1317_L002_R2_001.fastq.gz
+[main] Real time: 41.881 sec; CPU: 989.249 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1285794 sequences (133722576 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (110, 1124960, 174, 0)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (166, 201, 235)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (28, 373)
+[M::mem_pestat] mean and std.dev: (200.83, 48.46)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 442)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 874, 7037)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21071)
+[M::mem_pestat] mean and std.dev: (2132.43, 2950.24)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28088)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 665.642 CPU sec, 23.867 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (35, 468628, 66, 0)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (166, 201, 235)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (28, 373)
+[M::mem_pestat] mean and std.dev: (200.90, 48.35)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 442)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (115, 894, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 20896)
+[M::mem_pestat] mean and std.dev: (2824.29, 3139.93)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 27823)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1285794 reads in 300.990 CPU sec, 10.057 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WB01\tSM:VAC_155005_P010_WB01 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB01_i5-53_i7-31_S1317_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB01_i5-53_i7-31_S1317_L002_R2_001.fastq.gz
+[main] Real time: 41.490 sec; CPU: 973.245 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 1495696 sequences (155552384 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 1244413, 413, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (30, 375)
+[M::mem_pestat] mean and std.dev: (203.02, 48.07)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 444)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 137, 162)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (6, 266)
+[M::mem_pestat] mean and std.dev: (139.40, 59.54)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 378)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 629.710 CPU sec, 22.764 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 603451, 191, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (30, 375)
+[M::mem_pestat] mean and std.dev: (202.99, 48.13)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 444)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (118, 137, 193)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 343)
+[M::mem_pestat] mean and std.dev: (136.17, 76.56)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 442)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1495696 reads in 336.135 CPU sec, 11.256 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WB02\tSM:VAC_155005_P010_WB02 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB02_i5-53_i7-39_S1318_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB02_i5-53_i7-39_S1318_L002_R2_001.fastq.gz
+[main] Real time: 42.287 sec; CPU: 972.515 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (35, 1167880, 235, 1)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (30, 375)
+[M::mem_pestat] mean and std.dev: (202.72, 48.71)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 444)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 258, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2327.88, 3117.03)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::process] read 1495696 sequences (155552384 bp)...
+[M::mem_process_seqs] Processed 3076924 reads in 623.268 CPU sec, 22.651 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (25, 566499, 96, 0)
+[M::mem_pestat] analyzing insert size distribution for orientation FF...
+[M::mem_pestat] (25, 50, 75) percentile: (2131, 2131, 2131)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (2131, 2131)
+[M::mem_pestat] mean and std.dev: (2131.00, 0.00)
+[M::mem_pestat] low and high boundaries for proper pairs: (2131, 2131)
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 203, 237)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (30, 375)
+[M::mem_pestat] mean and std.dev: (202.73, 48.78)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 444)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 258, 3736)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 11168)
+[M::mem_pestat] mean and std.dev: (2049.39, 2845.25)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 14884)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation FF
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 1495696 reads in 328.851 CPU sec, 10.988 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WB02\tSM:VAC_155005_P010_WB02 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB02_i5-53_i7-39_S1318_L002_R1_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB02_i5-53_i7-39_S1318_L002_R2_001.fastq.gz
+[main] Real time: 40.898 sec; CPU: 959.099 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 721726 sequences (75059504 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (2, 1195697, 352, 2)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 372)
+[M::mem_pestat] mean and std.dev: (202.20, 48.05)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 440)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (110, 159, 191)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 353)
+[M::mem_pestat] mean and std.dev: (139.77, 88.35)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 493)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 726.973 CPU sec, 24.250 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 280185, 90, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (168, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (32, 372)
+[M::mem_pestat] mean and std.dev: (202.09, 48.16)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 440)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (121, 159, 162)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (39, 244)
+[M::mem_pestat] mean and std.dev: (152.10, 29.83)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 285)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 721726 reads in 181.579 CPU sec, 6.202 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WB03\tSM:VAC_155005_P010_WB03 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_macrocarpon_Stevens_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB03_i5-53_i7-2_S1319_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB03_i5-53_i7-2_S1319_L002_R1_001.fastq.gz
+[main] Real time: 39.045 sec; CPU: 915.327 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 3076924 sequences (320000096 bp)...
+[M::process] read 721726 sequences (75059504 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (1, 1122221, 232, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (29, 374)
+[M::mem_pestat] mean and std.dev: (201.97, 48.74)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 443)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (8, 258, 5357)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 16055)
+[M::mem_pestat] mean and std.dev: (2008.67, 2923.89)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 21404)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 3076924 reads in 685.507 CPU sec, 23.024 real sec
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 262938, 54, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (167, 202, 236)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (29, 374)
+[M::mem_pestat] mean and std.dev: (201.86, 48.84)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 443)
+[M::mem_pestat] analyzing insert size distribution for orientation RF...
+[M::mem_pestat] (25, 50, 75) percentile: (20, 258, 7042)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 21086)
+[M::mem_pestat] mean and std.dev: (2640.41, 3261.35)
+[M::mem_pestat] low and high boundaries for proper pairs: (1, 28108)
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_pestat] skip orientation RF
+[M::mem_process_seqs] Processed 721726 reads in 170.762 CPU sec, 5.838 real sec
+[main] Version: 0.7.17-r1188
+[main] CMD: bwa mem -t 32 -R @RG\tID:VAC_155005_P010_WB03\tSM:VAC_155005_P010_WB03 /project/gifvl_vaccinium/cranberryGenotyping/genome_assemblies/Vaccinium_oxycoccos_physical_v1.fasta /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB03_i5-53_i7-2_S1319_L002_R2_001.fastq.gz /project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/Data/2022/fastq_files/RAPiD-Genomics_F310_VAC_155005_P010_WB03_i5-53_i7-2_S1319_L002_R1_001.fastq.gz
+[main] Real time: 36.803 sec; CPU: 863.200 sec
+[bam_sort_core] merging from 0 files and 32 in-memory blocks...

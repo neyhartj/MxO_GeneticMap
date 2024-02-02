@@ -75,7 +75,7 @@ SAMPLENAMESARRAY=($SAMPLENAMES)
 SAMPLENAMESUSE=$(echo ${SAMPLENAMESARRAY[@]:0:15})
 
 # Iterate over the sample names
-for SAMPLE in SAMPLENAMESUSE; do
+for SAMPLE in $SAMPLENAMESUSE; do
   # Create a RG tag
   RG="@RG\tID:$SAMPLE\tSM:$SAMPLE"
 

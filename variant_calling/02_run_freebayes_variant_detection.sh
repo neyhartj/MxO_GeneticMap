@@ -5,10 +5,10 @@
 
 #SBATCH --job-name="MxO RAPiD freebayes variant calling"
 #SBATCH -p short
-#SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
+#SBATCH -t 48:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
-#SBATCH -n 32   # 8 processor core(s) per node X 2 threads per core
-#SBATCH --mem=8G   # maximum memory per node
+#SBATCH -n 72   # 8 processor core(s) per node X 2 threads per core
+#SBATCH --mem=216G   # maximum memory per node
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN,END,FAIL
 
@@ -59,6 +59,10 @@ VARIANTDIR=$WD/variant_calling/variants/
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 
+# Run Stevens alignment or Oxy?
+# REF=STEVENS
+REF=OXY
+
 
 ##############################
 ## DO NOT EDIT BELOW
@@ -77,12 +81,31 @@ ALIGNMENTFILESSTE=$(find $ALIGNDIR -name "*STEVENS_alignment.bam")
 ALIGNMENTFILESOXY=$(find $ALIGNDIR -name "*OXY_alignment.bam")
 
 
-## Run variant calling for alignment to STEVENS
-# Ouput file
-OUTPUT=$VARIANTDIR/MXO_STEVENS_ref_variants.vcf
-freebayes -f $DBPREFIXSTEVENS $ALIGNMENTFILESSTE > $OUTPUT
+if [ $REF = "STEVENS" ]; 
+then
 
-## Run variant calling for alignment to OXY
-# Ouput file
-OUTPUT=$VARIANTDIR/MXO_OXY_ref_variants.vcf
-freebayes -f $DBPREFIXOXY $ALIGNMENTFILESOXY > $OUTPUT
+	echo -e "Variant calling using the STEVENS alignment...\n"
+
+	## Run variant calling for alignment to STEVENS
+	# Ouput file
+	OUTPUT=$VARIANTDIR/MXO_STEVENS_ref_variants.vcf
+	# freebayes -f $DBPREFIXSTEVENS $ALIGNMENTFILESSTE > $OUTPUT
+	# Use parallelization
+	freebayes-parallel <(fasta_generate_regions.py $DBPREFIXSTEVENS 100000) $SLURM_JOB_CPUS_PER_NODE \
+		-f $DBPREFIXSTEVENS $ALIGNMENTFILESSTE > $OUTPUT
+
+elif [ $REF = "OXY" ];
+then
+
+	echo -e "Variant calling using the OXY alignment...\n"
+
+	## Run variant calling for alignment to OXY
+	# Ouput file
+	OUTPUT=$VARIANTDIR/MXO_OXY_ref_variants.vcf
+	# freebayes -f $DBPREFIXOXY $ALIGNMENTFILESOXY > $OUTPUT
+
+	# Use parallelization
+	freebayes-parallel <(fasta_generate_regions.py $DBPREFIXOXY 100000) $SLURM_JOB_CPUS_PER_NODE \
+	        -f $DBPREFIXOXY $ALIGNMENTFILESOXY > $OUTPUT
+
+fi
