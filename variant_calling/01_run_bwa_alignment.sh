@@ -70,8 +70,12 @@ cd $WD
 # Use the sample file to create a vector of sample names
 SAMPLENAMES=$(cut -d \t -f 1 $SAMPLEFILE)
 
+# TESTING: Select the first 15 files
+SAMPLENAMESARRAY=($SAMPLENAMES)
+SAMPLENAMESUSE=$(echo ${SAMPLENAMESARRAY[@]:0:15})
+
 # Iterate over the sample names
-for SAMPLE in $SAMPLENAMES; do
+for SAMPLE in SAMPLENAMESUSE; do
   # Create a RG tag
   RG="@RG\tID:$SAMPLE\tSM:$SAMPLE"
 
@@ -80,17 +84,22 @@ for SAMPLE in $SAMPLENAMES; do
 
   ## ALIGNMENT TO STEVENS
   # Create the output SAM file name
-  OUTPUT=$ALIGNDIR/${SAMPLE}_STEVENS_alignment.bam
-  # Run the alignment
-  bwa mem -t $NTHREADS -R $RG $DBPREFIXSTEVENS $SAMPLEFASTQS | samtools view -b -o $OUTPUT -
-  # Sort
-  samtools sort -O bam -o $OUTPUT -@ $NTHREADS $OUTPUT
+  OUTPUT=$ALIGNDIR/${SAMPLE}_STEVENS_alignment.sam
+  OUTPUTBAM=$ALIGNDIR/${SAMPLE}_STEVENS_alignment.bam
+  # Run the alignment in a pipeline
+  bwa mem -t $NTHREADS -R $RG $DBPREFIXSTEVENS $SAMPLEFASTQS | \
+  samtools fixmate -u -m - - | \
+  samtools sort -u -@$NTHREADS - | \
+  samtools markdup -O bam -@$NTHREADS - $OUTPUTBAM
+
 
   ## ALIGNMENT TO OXY
-  OUTPUT=$ALIGNDIR/${SAMPLE}_OXY_alignment.bam
+  OUTPUT=$ALIGNDIR/${SAMPLE}_OXY_alignment.sam
+  OUTPUTBAM=$ALIGNDIR/${SAMPLE}_OXY_alignment.bam
   # Run the alignment
-  bwa mem -t $NTHREADS -R $RG $DBPREFIXOXY $SAMPLEFASTQS | samtools view -b -o $OUTPUT -
-  # Sort
-  samtools sort -O bam -o $OUTPUT -@ $NTHREADS $OUTPUT
+  bwa mem -t $NTHREADS -R $RG $DBPREFIXOXY $SAMPLEFASTQS | \
+  samtools fixmate -u -m - - | \
+  samtools sort -u -@$NTHREADS - | \
+  samtools markdup -O bam -@$NTHREADS - $OUTPUTBAM
 
 done
