@@ -90,12 +90,7 @@ for SAMPLE in $SAMPLENAMESUSE; do
   # Run the alignment in a pipeline
   bwa mem -t $NTHREADS -R $RG $DBPREFIXSTEVENS $SAMPLEFASTQS | \
   samtools fixmate -u -m - - | \
-  samtools sort -u -@$NTHREADS - | \
-  samtools markdup -O bam -@$NTHREADS - $OUTPUTBAM
-
-  # Index
-  samtools index $OUTPUTBAM
-
+  samtools sort -b -@ $NTHREADS -o $OUTPUTBAM -
 
   ## ALIGNMENT TO OXY
   OUTPUT=$ALIGNDIR/${SAMPLE}_OXY_alignment.sam
@@ -103,10 +98,6 @@ for SAMPLE in $SAMPLENAMESUSE; do
   # Run the alignment
   bwa mem -t $NTHREADS -R $RG $DBPREFIXOXY $SAMPLEFASTQS | \
   samtools fixmate -u -m - - | \
-  samtools sort -u -@$NTHREADS - | \
-  samtools markdup -O bam -@$NTHREADS - $OUTPUTBAM
-
-  # Index
-  samtools index $OUTPUTBAM
+  samtools sort -b -@ $NTHREADS -o $OUTPUTBAM -
 
 done
