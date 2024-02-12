@@ -62,6 +62,10 @@ PROBEBED=/project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/vm_fle
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 
+# Run Stevens alignment or Oxy?
+REF=STEVENS
+# REF=OXY
+
 
 ##############################
 ## DO NOT EDIT BELOW
@@ -73,38 +77,84 @@ NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 # Change working directory
 cd $WD
 
-## STEVEN alignment files
+# Print a message
+echo -e "Removing duplicates and merging the $REF alignments...\n"
 
-# List files for the Stevens alignment
-BAMFILESSTE=$(find $ALIGNDIR -name "*STEVENS_alignment.bam")
+if [ $REF = "STEVENS" ];
+then
 
-# Iterate over the alignment files
-for BAMFILE in $BAMFILESSTE; do
-	
-	# Output file from duplicate marking
-	OUTPUT=${BAMFILE%".bam"}_nodup.bam
-	MARKDUPOUT=${BAMFILE%".bam"}_duplicate_metrics.txt
+    ## STEVEN alignment files
 
-	# Mark and remove duplicates
-	java -Xmx100G -jar /software/el9/apps/picard/3.0.0/picard.jar MarkDuplicates \
-		--REMOVE_DUPLICATES true \
-		-I $BAMFILE \
-		-O $OUTPUT \
-		-M $MARKDUPOUT
+    # List files for the Stevens alignment
+    BAMFILES=$(find $ALIGNDIR -name "*STEVENS_alignment.bam")
 
-done
+    # Iterate over the alignment files
+    for BAMFILE in $BAMFILES; do
+
+    	# Output file from duplicate marking
+    	OUTPUT=${BAMFILE%".bam"}_nodup.bam
+    	MARKDUPOUT=${BAMFILE%".bam"}_duplicate_metrics.txt
+
+    	# Mark and remove duplicates
+    	java -Xmx100G -jar /software/el9/apps/picard/3.0.0/picard.jar MarkDuplicates \
+    		--REMOVE_DUPLICATES true \
+    		-I $BAMFILE \
+    		-O $OUTPUT \
+    		-M $MARKDUPOUT
+
+    done
 
 
-# Collect new BAM file names
-NEWBAMFILESSTE=$(find $ALIGNDIR -name "*STEVENS_alignment_nodup.bam")
+    # Collect new BAM file names
+    NEWBAMFILES=$(find $ALIGNDIR -name "*STEVENS_alignment_nodup.bam")
 
-# Merge the bam files
-# Sort on coordinates
-# Subset the bam files for only those positions overlapping with the probe BED file
-samtools merge -@ $SLURM_JOB_CPUS_PER_NODE -o - $NEWBAMFILESSTE | \
-	samtools sort -@ $SLURM_JOB_CPUS_PER_NODE -u - | \
-	samtools view -b -o $MERGEDALIGNDIR/mxo_stevens_alignments_merged.bam -@ $SLURM_JOB_CPUS_PER_NODE -L $PROBEBED -
+    # Merge the bam files
+    # Sort on coordinates
+    # Subset the bam files for only those positions overlapping with the probe BED file
+    samtools merge -@ $SLURM_JOB_CPUS_PER_NODE -o - $NEWBAMFILES | \
+    	samtools sort -@ $SLURM_JOB_CPUS_PER_NODE -u - | \
+    	samtools view -b -o $MERGEDALIGNDIR/mxo_stevens_alignments_merged.bam -@ $SLURM_JOB_CPUS_PER_NODE -L $PROBEBED -
 
-# Index
-samtools index $MERGEDALIGNDIR/mxo_stevens_alignments_merged.bam
+    # Index
+    samtools index $MERGEDALIGNDIR/mxo_stevens_alignments_merged.bam
+
+elif [ $REF = "OXY" ];
+then
+
+    ## OXY alignment files
+
+    # List files for the Stevens alignment
+    BAMFILES=$(find $ALIGNDIR -name "*OXY_alignment.bam")
+
+    # Iterate over the alignment files
+    for BAMFILE in $BAMFILES; do
+
+    	# Output file from duplicate marking
+    	OUTPUT=${BAMFILE%".bam"}_nodup.bam
+    	MARKDUPOUT=${BAMFILE%".bam"}_duplicate_metrics.txt
+
+    	# Mark and remove duplicates
+    	java -Xmx100G -jar /software/el9/apps/picard/3.0.0/picard.jar MarkDuplicates \
+    		--REMOVE_DUPLICATES true \
+    		-I $BAMFILE \
+    		-O $OUTPUT \
+    		-M $MARKDUPOUT
+
+    done
+
+
+    # Collect new BAM file names
+    NEWBAMFILES=$(find $ALIGNDIR -name "*OXY_alignment_nodup.bam")
+
+    # Merge the bam files
+    # Sort on coordinates
+    # Subset the bam files for only those positions overlapping with the probe BED file
+    samtools merge -@ $SLURM_JOB_CPUS_PER_NODE -o - $NEWBAMFILES | \
+    	samtools sort -@ $SLURM_JOB_CPUS_PER_NODE -u - | \
+    	samtools view -b -o $MERGEDALIGNDIR/mxo_oxy_alignments_merged.bam -@ $SLURM_JOB_CPUS_PER_NODE -
+
+    # Index
+    samtools index $MERGEDALIGNDIR/mxo_oxy_alignments_merged.bam
+
+fi
 

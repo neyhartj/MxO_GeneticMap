@@ -10,10 +10,10 @@ Steps for completing the variant calling pipeline
 
 -   [ ] Align reads to both genomes using BWA
 
--   [ ] Use freebayes to call SNPs based on both alignments
+-   [ ] Remove duplicate alignments (important because this is targeted sequencing) and merge .bam files
 
--   [ ] Filter SNPs
+-   [ ] Use freebayes to call SNPs separately based on alignments
+
+-   [ ] Filter SNPs for quality
 
 -   [ ] Construct genetic maps using SNPs from either alignment
-
--   [ ] 

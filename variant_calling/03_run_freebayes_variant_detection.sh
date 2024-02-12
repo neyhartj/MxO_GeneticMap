@@ -18,7 +18,7 @@
 ##
 ## Variant calling pipeline
 ##
-## Step 1. Alignment to reference genomes using the BWA aligner
+## Step 3. Call variants using freebayes
 ##
 
 # Set error handling options
