@@ -5,10 +5,10 @@
 
 #SBATCH --job-name="MxO RAPiD freebayes variant filtration"
 #SBATCH -p short
-#SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
+#SBATCH -t 02:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
-#SBATCH -n 32   # 8 processor core(s) per node X 2 threads per core
-#SBATCH --mem=192G   # maximum memory per node
+#SBATCH -n 8   # 8 processor core(s) per node X 2 threads per core
+#SBATCH --mem=48G   # maximum memory per node
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN,END,FAIL
 
@@ -18,7 +18,7 @@
 ##
 ## Variant calling pipeline
 ##
-## Step 3. Filter variants from freebayes
+## Step 4. Filter variants from freebayes
 ##
 
 # Set error handling options
@@ -28,6 +28,7 @@ set -o pipefail
 
 # Load the modules
 module load vcftools
+module load bcftools
 
 #####################
 ## Set variables
@@ -58,6 +59,10 @@ VARIANTDIR=$WD/variant_calling/variants/
 # Path to BED file containing the RAPiD Flex-Seq probes
 PROBEBED=/project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/vm_flexseq_probes.bed
 
+# Parameters for VCFtools filtration
+MAXMISSING=0.2
+MINDP=10
+
 
 
 ##############################
@@ -71,21 +76,64 @@ PROBEBED=/project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/vm_fle
 cd $WD
 
 # Get the variant files
-VARIANTFILESTE=$VARIANTDIR/MXO_STEVENS_ref_variants.vcf
-VARIANTFILEOXY=$VARIANTDIR/MXO_OXY_ref_variants.vcf
+VARIANTFILESTE=$VARIANTDIR/mxo_stevens-ref_variants.vcf.gz
+VARIANTFILEOXY=$VARIANTDIR/mxo_oxy-ref_variants.vcf.gz
+
+#######################
+## STEVENS alignment
+#######################
+
+# bcftools stats
+OUTPUTSTAT=${VARIANTFILESTE%".vcf.gz"}_stats.txt
+bcftools stats $VARIANTFILESTE > $OUTPUTSTAT
 
 
-## Filter variants from STEVENS alignment
-OUTPUT=$VARIANTDIR/MXO_STEVENS_ref_variants_filtered
+OUTPUT=${VARIANTFILESTE%".vcf.gz"}_filtered.vcf.gz
 
-vcftools --vcf $VARIANTFILESTE \
+vcftools --gzvcf $VARIANTFILESTE \
 	--bed $PROBEBED \
 	--remove-indels \
+	--min-alleles 2 \
+	--max-alleles 2 \
+	--max-missing $MAXMISSING \
+	--minDP $MINDP \
 	--recode \
 	--recode-INFO-all \
-	--out $OUTPUT
+	--stdout | gzip -c > $OUTPUT
+
+
+# bcftools stats
+OUTPUTSTAT=${OUTPUT%".vcf.gz"}_stats.txt
+bcftools stats $OUTPUT > $OUTPUTSTAT
 
 
 
+
+
+#######################
+## OXY alignment
+#######################
+
+# bcftools stats
+OUTPUTSTAT=${VARIANTFILEOXY%".vcf.gz"}_stats.txt
+bcftools stats $VARIANTFILEOXY > $OUTPUTSTAT
+
+OUTPUT=${VARIANTFILEOXY%".vcf.gz"}_filtered.vcf.gz
+
+vcftools --gzvcf $VARIANTFILEOXY \
+	--bed $PROBEBED \
+	--remove-indels \
+	--min-alleles 2 \
+	--max-alleles 2 \
+	--max-missing $MAXMISSING \
+	--minDP $MINDP \
+	--recode \
+	--recode-INFO-all \
+	--stdout | gzip -c > $OUTPUT
+
+
+# bcftools stats
+OUTPUTSTAT=${OUTPUT%".vcf.gz"}_stats.txt
+bcftools stats $OUTPUT > $OUTPUTSTAT
 
 

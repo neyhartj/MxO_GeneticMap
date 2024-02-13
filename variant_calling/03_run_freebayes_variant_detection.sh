@@ -5,7 +5,7 @@
 
 #SBATCH --job-name="MxO RAPiD freebayes variant calling"
 #SBATCH -p short
-#SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
+#SBATCH -t 02:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
 #SBATCH -n 72   # 8 processor core(s) per node X 2 threads per core
 #SBATCH --mem=216G   # maximum memory per node
@@ -103,6 +103,9 @@ then
 	freebayes-parallel <(fasta_generate_regions.py $DBPREFIXSTEVENS 1000000) $SLURM_JOB_CPUS_PER_NODE \
 		-f $DBPREFIXSTEVENS --use-best-n-alleles 2 --min-mapping-quality 30 $ALIGNMENTFILESSTE > $OUTPUT
 
+	# gzip the output
+	gzip $OUTPUT
+
 elif [ $REF = "OXY" ];
 then
 
@@ -116,5 +119,8 @@ then
 	# Use parallelization
 	freebayes-parallel <(fasta_generate_regions.py $DBPREFIXOXY 1000000) $SLURM_JOB_CPUS_PER_NODE \
 	  -f $DBPREFIXOXY --use-best-n-alleles 2 --min-mapping-quality 30 $ALIGNMENTFILESOXY > $OUTPUT
+
+	# gzip the output
+	gzip $OUTPUT
 
 fi

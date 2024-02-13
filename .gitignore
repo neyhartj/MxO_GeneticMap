@@ -17,3 +17,4 @@ data_raw/
 variant_calling/alignment/
 variant_calling/variants/
 variant_calling/merged_alignment/
+*slurm*
