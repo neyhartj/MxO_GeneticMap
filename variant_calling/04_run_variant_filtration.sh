@@ -121,7 +121,6 @@ bcftools stats $VARIANTFILEOXY > $OUTPUTSTAT
 OUTPUT=${VARIANTFILEOXY%".vcf.gz"}_filtered.vcf.gz
 
 vcftools --gzvcf $VARIANTFILEOXY \
-	--bed $PROBEBED \
 	--remove-indels \
 	--min-alleles 2 \
 	--max-alleles 2 \
