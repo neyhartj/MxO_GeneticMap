@@ -63,8 +63,8 @@ PROBEBED=/project/gifvl_vaccinium/cranberryGenotyping/RAPiD_Cranberry_15K/vm_fle
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 
 # Run Stevens alignment or Oxy?
-REF=STEVENS
-# REF=OXY
+# REF=STEVENS
+REF=OXY
 
 
 ##############################

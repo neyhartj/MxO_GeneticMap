@@ -1,0 +1,9 @@
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+Variant calling using the STEVENS alignment...
+
+slurmstepd: error: *** JOB 11413136 ON ceres20-compute-68 CANCELLED AT 2024-02-12T15:51:32 ***
