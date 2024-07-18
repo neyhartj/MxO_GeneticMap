@@ -14,9 +14,9 @@
 # Load packages
 library(tidyverse)
 library(vcfR)
-library(snps)
+# library(snps)
 library(statgenIBD)
-library(onemap)
+# library(onemap)
 
 # Load population information
 pop_metadata <- read_csv("data/population_metadata.csv")
@@ -24,7 +24,7 @@ pop_metadata <- read_csv("data/population_metadata.csv")
 
 # Load the VCF file -------------------------------------------------------
 
-vcf_in <- read.vcfR(file = "data/Final_DP10_Corrected_VAC_155005_SNPs_biallelic_mxos1_qual.recode.vcf.gz")
+vcf_in <- read.vcfR(file = "data_raw/mxo_stevens-ref_variants_filtered.vcf.gz")
 
 # Get snp info
 snp_info <- vcf_in@fix %>%
