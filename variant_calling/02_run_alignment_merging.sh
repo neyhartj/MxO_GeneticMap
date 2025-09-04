@@ -81,9 +81,6 @@ echo -e "Merging the alignments...\n"
 # List files for the Stevens alignment
 BAMFILES=$(find $ALIGNDIR -name "*STEVENS_alignment.bam")
 
-# Collect new BAM file names
-NEWBAMFILES=$(find $ALIGNDIR -name "*STEVENS_alignment_nodup.bam")
-
 # Merge the bam files
 # Sort on coordinates
 # Subset the bam files for only those positions overlapping with the probe BED file
