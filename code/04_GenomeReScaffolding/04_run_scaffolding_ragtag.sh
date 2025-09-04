@@ -49,6 +49,7 @@ NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 # Load modules
 module load miniconda
 module load minimap2
+module load quast
 
 # Load the environment
 source activate wgs_env
@@ -64,5 +65,8 @@ OUTPUT=$RESULTS/$SUBDIR/$ASSEMBLYNAME
 
 ## Scaffold the assembly with RagTag
 ragtag.py scaffold -o $OUTPUT -t $NTHREADS $REF $QUERY
+
+# Run quast stats on the assembly and old assembly
+quast.py -o $OUTPUT/quast_results -t $NTHREADS -r $REF $OUTPUT/ragtag.scaffold.fasta $QUERY
 
 # End of script
