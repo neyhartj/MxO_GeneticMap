@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+*.DS_Store
 code/mxo_final/*
 code/old/*
 data_raw/*
