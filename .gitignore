@@ -8,4 +8,4 @@ code/old/*
 data_raw/*
 data/*
 variant_calling/*
-output/*
+results/*
