@@ -59,31 +59,36 @@ mkdir -p $RESULTS/$SUBDIR
 OUTDIR=$RESULTS/$SUBDIR
 
 # Define a subdir for nucmer results
-NUCMER_OUT=$OUTDIR/stevens_oxy_nucmer
+NUCMER_OUT=$OUTDIR/nucmer
 mkdir -p $NUCMER_OUT
+NUCMER_PREFIX=${NUCMER_OUT}/stevens_oxy_nucmer
 # Align the oxycoccos genome to the stevens using stevens as the reference
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT $REF $QUERY
+nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_PREFIX $REF $QUERY
 
 # Filter for 1-1 alignments with at least 90% identity and at least 100 bp long
-delta-filter -m -i 90 -l 100 $NUCMER_OUT.delta > ${NUCMER_OUT}_i90_l100.delta
+delta-filter -m -i 90 -l 100 $NUCMER_PREFIX.delta > ${NUCMER_PREFIX}_i90_l100.delta
 
 # Produce a dotplot
-mummerplot --png --large --layout -p ${NUCMER_OUT}_i90_l100_mumerplot ${NUCMER_OUT}_i90_l100.delta
+MUMMERPLOT_OUT=$OUTDIR/mummerplot
+mkdir -p $MUMMERPLOT_OUT
+MUMMERPLOT_PREFIX=${MUMMERPLOT_OUT}/stevens_oxy_mummerplot
+mummerplot --png --large --layout -p ${MUMMERPLOT_PREFIX} ${NUCMER_PREFIX}_i90_l100.delta
 
 # Convert to tab of coordinates
-show-coords -THrd ${NUCMER_OUT}_i90_l100.delta > ${NUCMER_OUT}_i90_l100.coords
+show-coords -THrd ${NUCMER_PREFIX}_i90_l100.delta > ${NUCMER_PREFIX}_i90_l100.coords
 
 # Run SYRI
 # Define a subdir for syri results
-SYRI_OUT=$OUTDIR/stevens_oxy_syri
+SYRI_OUT=$OUTDIR/syri
 mkdir -p $SYRI_OUT
-SYRI_PREFIX=${SYRI_OUT}_i90_l100_syri_
+SYRI_PREFIX=stevens_oxy_syri
 
 syri -r $REF -q $QUERY \
-	-c ${NUCMER_OUT}_i90_l100.coords -d ${NUCMER_OUT}_i90_l100.delta \
+	-c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
 	--lf ${SYRI_PREFIX}.log --log DEBUG \
 	-k \
 	--nc 12 \
+	--dir $SYRI_OUT \
 	--prefix $SYRI_PREFIX
 # 
 
