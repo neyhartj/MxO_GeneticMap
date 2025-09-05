@@ -71,7 +71,19 @@ mkdir -p $NEWGENOMEDIR
 # Name of the modified reference fasta
 newstevens=${NEWGENOMEDIR}/V_macrocarpon_Stevens_v1_renamed.fasta
 # Rename the chromosomes in the reference fasta and only keep those that start with "chr"
-awk '/^>/{sub(/_Vaccinium_macrocarpon_Stevens_v1/,"");}1' $REF | awk '/^>chr/{print; getline; print}' > $newstevens
+awk '
+/^>/ {
+	if ($0 ~ /^>chr/) {
+		sub(/_Vaccinium_macrocarpon_Stevens_v1/, "")
+		keep=1
+		print
+	} else {
+		keep=0
+	}
+	next
+}
+keep { print }
+' $REF > $newstevens
 
 # Name of the modified query fasta
 oxyassembly=${NEWGENOMEDIR}/Voxycoccos_NJ96-20_v1_ragtag_scaffolded_renamed.fasta
