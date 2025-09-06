@@ -75,72 +75,26 @@ mkdir -p $NEWGENOMEDIR
 
 # Name of the modified ben lear fasta
 newbenlear=${NEWGENOMEDIR}/Vaccinium_macrocarpon_BenLear_v2_renamed.fasta
-# The ben lear chromosomes are already named "chr[##]", so we just need to only keep those that start with "chr"
-awk '
-/^>/ {
-	if ($0 ~ /^>chr[0-9]+/) {
-		match($0, /^>chr([0-9]+)/, arr)
-		num = arr[1]
-		if (length(num) == 1) num = "0" num
-		print ">chr" num
-		keep=1
-	} else {
-		keep=0
-	}
-	next
-}
-keep { print }
-' $BEN_LEAR_REF > $newbenlear
+# Use bioawk to only keep chromosomes that start with "chr" and take the reverse complement of chromosomes 1, 4, 5, 6, and 9
+bioawk -c fastx '$name ~ /^chr/ { if ($name=="chr01" || $name=="chr04" || $name=="chr05") { print ">"$name"\n"revcomp($seq) } else { print ">"$name"\n"$seq } }' $BEN_LEAR_REF > $newbenlear
 
 # Name of the modified stevens fasta
 newstevens=${NEWGENOMEDIR}/V_macrocarpon_Stevens_v1_renamed.fasta
-# Keep only chromosomes that start with "chr" and rename them to chr[##]
-awk '
-/^>/ {
-	if ($0 ~ /^>chr[0-9]+_Vaccinium_macrocarpon_Stevens_v1/) {
-		match($0, /^>chr([0-9]+)_Vaccinium_macrocarpon_Stevens_v1/, arr)
-		num = arr[1]
-		if (length(num) == 1) num = "0" num
-		print ">chr" num
-		keep=1
-	} else {
-		keep=0
-	}
-	next
-}
-keep { print }
-' $STEVENS_REF > $newstevens
+# Use bioawk to only keep the chromosomes that start with "chr", remove the suffix '_Vaccinium_macrocarpon_Stevens_v1', and rename them to "chr[##]"
+# Do no modify the orientation of any chromosomes in Stevens
+bioawk -c fastx '$name ~ /^chr/ { sub(/_.*/, "", $name); printf ">chr%02d\n%s\n", substr($name, 4), $seq }' $STEVENS_REF > $newstevens
 
 # Name of the modified query fasta
 oxyassembly=${NEWGENOMEDIR}/Voxycoccos_NJ96-20_v1_ragtag_scaffolded_renamed.fasta
-# Rename the chromosomes in the query fasta
-awk '
-/^>/ {
-	if ($0 ~ /^>chr[0-9]+_Vaccinium_macrocarpon_Stevens_v1_RagTag/) {
-		match($0, /^>chr([0-9]+)_Vaccinium_macrocarpon_Stevens_v1_RagTag/, arr)
-		num = arr[1]
-		if (length(num) == 1) num = "0" num
-		print ">chr" num
-		keep=1
-	} else {
-		keep=0
-	}
-	next
-}
-keep { print }
-' $OXY_REF > $oxyassembly
+bioawk -c fastx '$name ~ /^chr/ { sub(/_.*/, "", $name); printf ">chr%02d\n%s\n", substr($name, 4), $seq }' $OXY_REF > $oxyassembly
 
-# Sanity check: print the name and length of each chromosome in the modified fasta files
-# Remember that the fasta file will have multiple lines of 60 characters per sequence, so we need to use awk to get the length of each sequence
-echo -e "\n"
-echo "Chromosome lengths in the modified Ben Lear reference fasta:"
-awk '/^>/ {if (seqlen){print seqlen}; printf substr($0,2) "\t"; seqlen=0; next} {seqlen += length($0)} END {print seqlen}' $newbenlear
-echo -e "\n"
-echo "Chromosome lengths in the modified Stevens reference fasta:"
-awk '/^>/ {if (seqlen){print seqlen}; printf substr($0,2) "\t"; seqlen=0; next} {seqlen += length($0)} END {print seqlen}' $newstevens
-echo -e "\n"
-echo "Chromosome lengths in the modified oxycoccos query fasta:"
-awk '/^>/ {if (seqlen){print seqlen}; printf substr($0,2) "\t"; seqlen=0; next} {seqlen += length($0)} END {print seqlen}' $oxyassembly
+# Use bioawk to print the names and lengths of the chromosomes in each modified fasta file
+echo -e "\nChromosome lengths in the modified Ben Lear reference fasta:"
+bioawk -c fastx '$name ~ /^chr/ { print $name "\t" length($seq) }' $newbenlear
+echo -e "\nChromosome lengths in the modified Stevens reference fasta:"
+bioawk -c fastx '$name ~ /^chr/ { print $name "\t" length($seq) }' $newstevens
+echo -e "\nChromosome lengths in the modified Oxycoccos query fasta:"
+bioawk -c fastx '$name ~ /^chr/ { print $name "\t" length($seq) }' $oxyassembly
 echo -e "\n"
 
 # Define a subdir for nucmer results
