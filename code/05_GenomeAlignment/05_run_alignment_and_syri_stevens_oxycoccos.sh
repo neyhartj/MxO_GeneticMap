@@ -109,7 +109,7 @@ awk '
 	next
 }
 keep { print }
-' $REF > $newstevens
+' $STEVENS_REF > $newstevens
 
 # Name of the modified query fasta
 oxyassembly=${NEWGENOMEDIR}/Voxycoccos_NJ96-20_v1_ragtag_scaffolded_renamed.fasta
@@ -128,7 +128,7 @@ awk '
 	next
 }
 keep { print }
-' $QUERY > $oxyassembly
+' $OXY_REF > $oxyassembly
 
 # Sanity check: print the name and length of each chromosome in the modified fasta files
 # Remember that the fasta file will have multiple lines of 60 characters per sequence, so we need to use awk to get the length of each sequence
