@@ -14,8 +14,11 @@ library(tidyverse)
 library(vcfR)
 library(polyBreedR)
 library(onemap)
+library(berryBreedR)
 
 pop_metadata <- read_csv("data/population_metadata.csv")
+
+cran_dir <- find_cran_dir()
 
 
 # Minimum allele depth to retain a genotype call
@@ -29,24 +32,139 @@ parents <- c("STEVENS", "NJ98-20")
 # Names of the F1s
 f1s <- c("CNJ98-325-33", "CNJ98-309-19")
 
-# Load the VCF file -------------------------------------------------------
 
-vcf_in <- read.vcfR(file = "variant_calling/variants/mxo_stevens-ref_variants_filtered.vcf.gz")
-# vcf_in <- read.vcfR(file = "data_raw/cran1571_BenLearv1_snps_alias.vcf.gz")
 
-# Determine the reference genome
-if (any(grepl(pattern = "ben", x = vcf_in@meta, ignore.case = T))) {
-  reference_genome <- "BenLear"
-} else if (any(grepl(pattern = "stev", x = vcf_in@meta, ignore.case = T))) {
-  reference_genome <- "Stevens"
+
+# Process the Ben Lear reference SNPs -------------------------------------
+
+reference_genome <- "BenLear"
+
+# VCF file to use
+vcf_file <- file.path(cran_dir, "Genotyping/2023/RAPiD/Data/cran1571_BenLearv1_snps_alias_renamed.vcf.gz")
+
+# Load the file
+vcf_in <- read.vcfR(file = vcf_file)
+
+##
+## Subset genotypes
+##
+clones_subset <- c("STEVENS", "CNJ98-325-33", "NJ96-20", "CNJ98-309-19",
+                   subset(pop_metadata, category == "S1", individual, drop = TRUE))
+
+length(clones_subset)
+ind_keep <- intersect(clones_subset, colnames(vcf_in@gt))
+length(ind_keep)
+setdiff(clones_subset, ind_keep)
+
+vcf_in1 <- vcf_in[,c("FORMAT", ind_keep)]
+vcf_in1
+
+##
+## Subset chromosomes
+##
+idx <- which(vcf_in1@fix[,"CHROM"] != "Vmac_Unknown")
+vcf_in1 <- vcf_in1[idx, ]
+vcf_in1
+
+
+##
+## Subset markers - remove monomorphic
+##
+gt <- extract.gt(x = vcf_in1, element = "GT")
+ds <- GT2DS(GT = gt, n.core = 12)
+
+sdx <- apply(X = ds, MARGIN = 1, FUN = sd, na.rm = TRUE)
+idx <- which(sdx > 0)
+
+# Subset
+vcf_in1 <- vcf_in1[idx, ]
+vcf_in1
+
+
+## Filter out (i.e. replace with NA) genotype calls with insufficient allele depth
+
+# Extract the AD information
+ad <- extract.gt(x = vcf_in1, element = "AD")
+# Extract dp information
+dp <- extract.gt(x = vcf_in1, element = "DP")
+# Extract the GT information; make a copy
+gt1 <- gt <- extract.gt(x = vcf_in1, element = "GT")
+
+
+# Matrix of logicals for hets
+is_het <- gt == "0/1" | gt == "1/0"
+
+# Split to ref and alt
+ad_ref <- ADsplit(AD = ad, ALT = FALSE)
+ad_alt <- ADsplit(AD = ad, ALT = TRUE)
+
+# Apply a minimum depth filter to the AD data strings
+# First for homozygous
+which_min_ad_hom <- !is_het & (ad_ref >= min_AD | ad_alt >= min_AD)
+which_min_ad_het <- is_het & (ad_ref >= min_AD & ad_alt >= min_AD)
+which_min_ad <- which_min_ad_hom | which_min_ad_het
+
+
+# If a sample is NA or does not meet the AD threshold, set as missing (./.)
+if (any(is.na(gt1))) {
+  gt1[is.na(gt1)] <- "./."
 }
 
-# Replace sample names with geno ids
-gt_colnames <- colnames(vcf_in@gt)
-idx <- match(x = gt_colnames, table = pop_metadata$RG_Sample_Code, nomatch = 0)
-gt_colnames <- c("FORMAT", pop_metadata$individual[idx])
-vcf_in1 <- vcf_in
-colnames(vcf_in1@gt) <- gt_colnames
+if (any(!which_min_ad)) {
+  gt1[!which_min_ad] <- "./."
+}
+
+
+
+## Filter on missingness
+
+# Calculate SNP missingness
+snp_missing <- rowMeans(gt1 == "./.")
+hist(snp_missing)
+# subset
+idx <- which(snp_missing <= max_snp_missing)
+gt2 <- gt1[idx, , drop = FALSE]
+dim(gt2)
+
+ad1 <- ad[idx,]
+dp1 <- dp[idx,]
+
+fixed <- getFIX(vcf_in1)
+fixed1 <- fixed[idx, ]
+info <- getINFO(vcf_in1)
+info1 <- info[idx]
+
+
+
+
+
+
+
+
+# Load the VCF file -------------------------------------------------------
+
+# List the VCF files to use
+vcf_file1 <- list.files(path = "data_raw/", pattern = "*.vcf.gz", full.names = TRUE)
+vcf_file2 <- file.path(cran_dir, "Genotyping/2023/RAPiD/Data/cran1571_BenLearv1_snps_alias_renamed.vcf.gz")
+vcf_files <- c(vcf_file1, vcf_file2)
+
+# Iterate over VCF files
+for (file in vcf_files) {
+  vcf_in <- read.vcfR(file = file)
+
+  # Determine the reference genome
+  if (any(grepl(pattern = "ben", x = vcf_in@meta, ignore.case = T))) {
+    reference_genome <- "BenLear"
+  } else if (any(grepl(pattern = "stev", x = vcf_in@meta, ignore.case = T))) {
+    reference_genome <- "Stevens"
+  }
+
+  # Replace sample names with geno ids
+  gt_colnames <- colnames(vcf_in@gt)
+  idx <- match(x = gt_colnames, table = pop_metadata$RG_Sample_Code, nomatch = 0)
+  gt_colnames <- c("FORMAT", pop_metadata$individual[idx])
+  vcf_in1 <- vcf_in
+  colnames(vcf_in1@gt) <- gt_colnames
 
 # # Subset the VCF for only the relevant clones
 # clones_subset <- c("ST", "CNJ98-325-33_rep1", "CNJ98-325-33_rep2", "NJ96-20_rep1", "NJ96-20_rep2", "CNJ98-309-19",
