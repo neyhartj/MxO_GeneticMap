@@ -9,7 +9,7 @@
 #SBATCH --ntasks-per-node=8   # 8 processor core(s) per node X 2 threads per core
 #SBATCH --mem=128G   # maximum memory per node
 #SBATCH --partition=short    # standard node(s)
-#SBATCH --job-name="MxO RAPiD variant calling pipeline - QC"
+#SBATCH --job-name="MxO RAPiD variant calling pipeline - read cleaning"
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN
 #SBATCH --mail-type=END
@@ -21,7 +21,7 @@
 ##
 ## Variant calling pipeline
 ##
-## Step 1. Quality control of raw reads
+## Step 2. Read trimming and quality control
 ##
 
 # Set error handling options
@@ -33,6 +33,7 @@ set -o pipefail
 module load fastqc
 module load cutadapt
 module load parallel
+module load multiqc
 
 #####################
 ## Set variables
@@ -77,41 +78,20 @@ if [ ! -d $QCOUTPUT ]; then
   mkdir -p $QCOUTPUT
 fi 
 
-# Create a "pre-QC" directory in the QC output directory
-PREQCOUTPUT=$QCOUTPUT/pre_qc
-if [ ! -d $PREQCOUTPUT ]; then
-  mkdir -p $PREQCOUTPUT
+# Create a "post-QC" directory in the QC output directory
+POSTQCOUTPUT=$QCOUTPUT/post_qc
+if [ ! -d $POSTQCOUTPUT ]; then
+  mkdir -p $POSTQCOUTPUT
 fi
 
 # Export FASTQDIR variable for use in parallel
 export FASTQDIRUSE=$FASTQDIR
 
 # Use the sample file to create a vector of sample names
-SAMPLENAMES=$(cut -d \t -f 1 $SAMPLEFILE)
-
-# Iterate over the sample names
-for SAMPLE in $SAMPLENAMES; do
-  echo -e "\nProcessing sample: $SAMPLE"
-
-  # Find the FASTQ files in the input directory that match the sample name;
-  # There will be two files per sample (R1 and R2)
-  # Use a wildcard before and after the sample name to capture the full file name
-  # (e.g. S1_L001_R1_001.fastq.gz)
-  # Store the file names in a variable
-  SAMPLEFASTQS=$(find $FASTQDIR -name "*$SAMPLE*")
-
-  # Run FastQC on the raw reads
-  fastqc -f fastq -t $NTHREADS -o $PREQCOUTPUT ${SAMPLEFASTQS[@]}
-
-done
-
-# Run multiqc to summarize the FastQC results
-multiqc -o $PREQCOUTPUT $PREQCOUTPUT
+SAMPLENAMES=($(cut -d \t -f 1 $SAMPLEFILE))
 
 
-
-
-## Step 2: Read trimming and quality control
+## Step 1: Read trimming and quality control
 
 # Create the output directory if it does not exist
 if [ ! -d $CLEANEDFASTQOUTPUT ]; then
@@ -123,6 +103,7 @@ run_cutadapt() {
 
   # The first input will be the prefix of the two fastq files
   prefix=$1
+  # The second input will be the output directory
   output=$2
 
   # Use the prefix to find the two FASTQ files
@@ -130,15 +111,18 @@ run_cutadapt() {
   file2=$(find $FASTQDIRUSE -name "${prefix}_R2_*.fq.gz")
 
 
-
-  # Create an output file
+  # Run cutadapt on both files separately
+  # R1
   newfile="${file1%.fq.gz}_trim.fq.gz"
   outputfile=$output/$newfile
   logfile=$output/"${file1%.fq.gz}_cutadapt_log.txt"
+  cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file1 > $logfile
 
-  # Run cutadapt
-
-  cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file > $logfile
+  # R2
+  newfile="${file2%.fq.gz}_trim.fq.gz"
+  outputfile=$output/$newfile
+  logfile=$output/"${file2%.fq.gz}_cutadapt_log.txt"
+  cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file2 > $logfile
 
 }
 
@@ -146,15 +130,26 @@ run_cutadapt() {
 export -f run_cutadapt
 
 # Run the function in parallel
-parallel -j $NTHREADS run_cutadapt {} $FASTQOUTPUT ::: ${FASTQFILES[@]}
+parallel -j $NTHREADS run_cutadapt {} $CLEANEDFASTQOUTPUT ::: ${SAMPLENAMES[@]}
 
 
-# Run fastqc after adapter trimming
+# Step 2: post-trimming quality control
 
-# List the merged FASTQ files
-FASTQFILES=($(find $FASTQOUTPUT -name "*.fq.gz"))
+# Iterate over the sample names
+for SAMPLE in ${SAMPLENAMES[@]}; do
+  echo -e "\nRunning post-trimming fastqc for sample: $SAMPLE"
 
-# Run FASTQC
-fastqc -f fastq -t $NTHREADS -o $FASTQC_OUTPUT ${FASTQFILES[@]}
+  # Find the FASTQ files in the input directory that match the sample name;
+  # There will be two files per sample (R1 and R2)
+  # Use a wildcard before and after the sample name to capture the full file name
+  # (e.g. S1_L001_R1_001.fastq.gz)
+  # Store the file names in a variable
+  SAMPLEFASTQS=$(find $CLEANEDFASTQOUTPUT -name "*$SAMPLE*")
 
+  # Run FastQC on the raw reads
+  fastqc -f fastq -t $NTHREADS -o $POSTQCOUTPUT ${SAMPLEFASTQS[@]}
 
+done
+
+# Run multiqc to summarize the FastQC results
+multiqc -o $POSTQCOUTPUT $POSTQCOUTPUT
