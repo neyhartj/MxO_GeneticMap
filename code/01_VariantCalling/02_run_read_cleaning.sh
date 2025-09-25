@@ -107,21 +107,21 @@ run_cutadapt() {
   output=$2
 
   # Use the prefix to find the two FASTQ files
-  file1=$(find $FASTQDIRUSE -name "${prefix}_R1_*.fq.gz")
-  file2=$(find $FASTQDIRUSE -name "${prefix}_R2_*.fq.gz")
+  file1=$(find $FASTQDIRUSE -name "*${prefix}_*_R1_*.fastq.gz")
+  file2=$(find $FASTQDIRUSE -name "*${prefix}_*_R2_*.fastq.gz")
 
 
   # Run cutadapt on both files separately
   # R1
-  newfile="${file1%.fq.gz}_trim.fq.gz"
+  newfile="${file1%.fastq.gz}_trim.fastq.gz"
   outputfile=$output/$newfile
-  logfile=$output/"${file1%.fq.gz}_cutadapt_log.txt"
+  logfile=$output/"${file1%.fastq.gz}_cutadapt_log.txt"
   cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file1 > $logfile
 
   # R2
-  newfile="${file2%.fq.gz}_trim.fq.gz"
+  newfile="${file2%.fastq.gz}_trim.fastq.gz"
   outputfile=$output/$newfile
-  logfile=$output/"${file2%.fq.gz}_cutadapt_log.txt"
+  logfile=$output/"${file2%.fastq.gz}_cutadapt_log.txt"
   cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file2 > $logfile
 
 }
