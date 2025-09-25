@@ -113,15 +113,17 @@ run_cutadapt() {
 
   # Run cutadapt on both files separately
   # R1
-  newfile="${file1%.fastq.gz}_trim.fastq.gz"
+  file1_basename=$(basename "$file1")
+  newfile="${file1_basename%.fastq.gz}_trim.fastq.gz"
   outputfile=$output/$newfile
-  logfile=$output/"${file1%.fastq.gz}_cutadapt_log.txt"
+  logfile=$output/"${file1_basename%.fastq.gz}_cutadapt_log.txt"
   cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file1 > $logfile
 
   # R2
-  newfile="${file2%.fastq.gz}_trim.fastq.gz"
+  file2_basename=$(basename "$file2")
+  newfile="${file2_basename%.fastq.gz}_trim.fastq.gz"
   outputfile=$output/$newfile
-  logfile=$output/"${file2%.fastq.gz}_cutadapt_log.txt"
+  logfile=$output/"${file2_basename%.fastq.gz}_cutadapt_log.txt"
   cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file2 > $logfile
 
 }
