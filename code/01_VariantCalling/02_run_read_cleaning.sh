@@ -146,7 +146,7 @@ for SAMPLE in ${SAMPLENAMES[@]}; do
   # Use a wildcard before and after the sample name to capture the full file name
   # (e.g. S1_L001_R1_001.fastq.gz)
   # Store the file names in a variable
-  SAMPLEFASTQS=$(find $CLEANEDFASTQOUTPUT -name "*$SAMPLE*")
+  SAMPLEFASTQS=$(find $CLEANEDFASTQOUTPUT -name "*$SAMPLE*.fastq.gz")
 
   # Run FastQC on the raw reads
   fastqc -f fastq -t $NTHREADS -o $POSTQCOUTPUT ${SAMPLEFASTQS[@]}
