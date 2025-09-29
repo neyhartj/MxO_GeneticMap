@@ -110,21 +110,15 @@ run_cutadapt() {
   file1=$(find $FASTQDIRUSE -name "*${prefix}_*_R1_*.fastq.gz")
   file2=$(find $FASTQDIRUSE -name "*${prefix}_*_R2_*.fastq.gz")
 
-
-  # Run cutadapt on both files separately
-  # R1
+  # Run cutadapt in paired-end mode
   file1_basename=$(basename "$file1")
-  newfile="${file1_basename%.fastq.gz}_trim.fastq.gz"
-  outputfile=$output/$newfile
-  logfile=$output/"${file1_basename%.fastq.gz}_cutadapt_log.txt"
-  cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file1 > $logfile
-
-  # R2
   file2_basename=$(basename "$file2")
-  newfile="${file2_basename%.fastq.gz}_trim.fastq.gz"
-  outputfile=$output/$newfile
-  logfile=$output/"${file2_basename%.fastq.gz}_cutadapt_log.txt"
-  cutadapt -a $ADAPTER -m 30 -q 20 -o $outputfile $file2 > $logfile
+  outputfile1=$output/${file1_basename%.fastq.gz}_trim.fastq.gz
+  outputfile2=$output/${file2_basename%.fastq.gz}_trim.fastq.gz
+  logfile=$output/"${prefix}_cutadapt_log.txt"
+
+  cutadapt -a "$ADAPTER" -A "$ADAPTER" -q 20,20 -m 30 -M 0 --pair-filter both \
+  -o $outputfile1 -p $outputfile2 $file1 $file2 > $logfile 2>&1
 
 }
 
