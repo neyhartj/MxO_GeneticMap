@@ -70,10 +70,16 @@ mkdir -p $ALIGNDIR
 
 ## Get a list of the cleaned FASTQ files
 FASTQFILES=$(find $FASTQDIR -name "*trim.fastq.gz")
+# Remove the suffix "_R[1,2]_001_trim.fastq.gz" to get the unique sample names
+SAMPLES=$(echo "$FASTQFILES" | sed 's/_R[1,2]_001_trim.fastq.gz//g' | sort -u)
 
 # Iterate over those files and align to the BenLear, Stevens, and Oxycoccos reference genomes
-for fastqfile in $FASTQFILES; do
-  SAMPLE=$(basename $fastqfile | sed 's/.fastq.gz"//g')
+# Use paired-end mode for BWA mem
+for SAMPLE in $SAMPLES; do
+  # Get the FASTQ files for this sample
+  fastq1file=${SAMPLE}_R1_001_trim.fastq.gz
+  fastq2file=${SAMPLE}_R2_001_trim.fastq.gz
+
   # Create a RG tag
   RG="@RG\tID:$SAMPLE\tSM:$SAMPLE\tPL:ILLUMINA"
 
@@ -83,7 +89,7 @@ for fastqfile in $FASTQFILES; do
   OUTPUTBAM=$ALIGNDIR/${SAMPLE}_${REFNAME}_alignment.bam
   
   # Run the alignment in a pipeline
-  bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastqfile | \
+  bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastq1file $fastq2file | \
   samtools fixmate -u -m - - | \
   samtools sort -@ $NTHREADS -o $OUTPUTBAM -
   samtools index $OUTPUTBAM
@@ -93,7 +99,7 @@ for fastqfile in $FASTQFILES; do
   REFNAME="Stevens"
   OUTPUTBAM=$ALIGNDIR/${SAMPLE}_${REFNAME}_alignment.bam
   # Run the alignment in a pipeline
-  bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastqfile | \
+  bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastq1file $fastq2file | \
   samtools fixmate -u -m - - | \
   samtools sort -@ $NTHREADS -o $OUTPUTBAM -
   samtools index $OUTPUTBAM 
@@ -103,7 +109,7 @@ for fastqfile in $FASTQFILES; do
   REFNAME="Oxycoccos"
   OUTPUTBAM=$ALIGNDIR/${SAMPLE}_${REFNAME}_alignment.bam
   # Run the alignment in a pipeline
-  bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastqfile | \
+  bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastq1file $fastq2file | \
   samtools fixmate -u -m - - | \
   samtools sort -@ $NTHREADS -o $OUTPUTBAM -
   samtools index $OUTPUTBAM
