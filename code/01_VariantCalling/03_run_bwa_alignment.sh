@@ -80,13 +80,16 @@ for SAMPLE in $SAMPLES; do
   fastq1file=${SAMPLE}_R1_001_trim.fastq.gz
   fastq2file=${SAMPLE}_R2_001_trim.fastq.gz
 
+  # Basename of sample
+  SAMPLEBASE=$(basename $SAMPLE)
+
   # Create a RG tag
-  RG="@RG\tID:$SAMPLE\tSM:$SAMPLE\tPL:ILLUMINA"
+  RG="@RG\tID:$SAMPLEBASE\tSM:$SAMPLEBASE\tPL:ILLUMINA"
 
   # Align to the BenLear reference
   REFPREFIX=$BLREFPREFIX
   REFNAME="BenLear"
-  OUTPUTBAM=$ALIGNDIR/${SAMPLE}_${REFNAME}_alignment.bam
+  OUTPUTBAM=$ALIGNDIR/${SAMPLEBASE}_${REFNAME}_alignment.bam
   
   # Run the alignment in a pipeline
   bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastq1file $fastq2file | \
@@ -97,7 +100,7 @@ for SAMPLE in $SAMPLES; do
   # Align to the Stevens reference
   REFPREFIX=$STREFPREFIX
   REFNAME="Stevens"
-  OUTPUTBAM=$ALIGNDIR/${SAMPLE}_${REFNAME}_alignment.bam
+  OUTPUTBAM=$ALIGNDIR/${SAMPLEBASE}_${REFNAME}_alignment.bam
   # Run the alignment in a pipeline
   bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastq1file $fastq2file | \
   samtools fixmate -u -m - - | \
@@ -107,7 +110,7 @@ for SAMPLE in $SAMPLES; do
   # Align to the Oxycoccos reference
   REFPREFIX=$OXREFPREFIX
   REFNAME="Oxycoccos"
-  OUTPUTBAM=$ALIGNDIR/${SAMPLE}_${REFNAME}_alignment.bam
+  OUTPUTBAM=$ALIGNDIR/${SAMPLEBASE}_${REFNAME}_alignment.bam
   # Run the alignment in a pipeline
   bwa mem -t $NTHREADS -R $RG $REFPREFIX $fastq1file $fastq2file | \
   samtools fixmate -u -m - - | \
