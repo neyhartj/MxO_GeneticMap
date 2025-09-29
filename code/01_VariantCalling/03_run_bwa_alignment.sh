@@ -43,7 +43,7 @@ FASTQDIR=$WD/results/variant_calling/cleaned_fastq_files/
 
 # Prefix of the indexed reference genomes
 BLREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vaccinium_macrocarpon_BenLear_v2.fasta
-STREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vaccinium_macrocarpon_Stevens_v1.fasta
+STREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/V_macrocarpon_Stevens_v1.fasta.fasta
 OXREFPREFIX=//project/gifvl_vaccinium/MxO_GeneticMap/results/genome_scaffolding_ragtag/Voxycoccos_NJ96-20_v1_ragtag_scaffolded/Voxycoccos_NJ96-20_v1_ragtag_scaffold.fasta
 
 
@@ -73,7 +73,7 @@ FASTQFILES=$(find $FASTQDIR -name "*trim.fastq.gz")
 
 # Iterate over those files and align to the BenLear, Stevens, and Oxycoccos reference genomes
 for fastqfile in $FASTQFILES; do
-  SAMPLE=$(basename $fastqfile | sed 's/.fq.gz//g')
+  SAMPLE=$(basename $fastqfile | sed 's/.fastq.gz"//g')
   # Create a RG tag
   RG="@RG\tID:$SAMPLE\tSM:$SAMPLE\tPL:ILLUMINA"
 
