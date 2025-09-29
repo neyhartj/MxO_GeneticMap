@@ -116,16 +116,16 @@ run_cutadapt() {
   outputfile1=$output/${file1_basename%.fastq.gz}_trim.fastq.gz
   outputfile2=$output/${file2_basename%.fastq.gz}_trim.fastq.gz
   
-  # logfile=$output/"${prefix}_cutadapt_log.txt"
+  logfile=$output/"${prefix}_cutadapt_log.txt"
 
-  # cutadapt -a "$ADAPTER" -A "$ADAPTER" -q 20,20 -m 30 -M 0 --pair-filter both \
-  # -o $outputfile1 -p $outputfile2 $file1 $file2 > $logfile 2>&1
+  cutadapt -a "$ADAPTER" -A "$ADAPTER" -q 20,20 -m 30 --pair-filter both \
+  -o $outputfile1 -p $outputfile2 $file1 $file2 > $logfile 2>&1
 
-  # Run cutadapt separately for each file
-  logfile1=$output/"${file1_basename%.fastq.gz}_cutadapt_log.txt"
-  logfile2=$output/"${file2_basename%.fastq.gz}_cutadapt_log.txt"
-  cutadapt -a "$ADAPTER" -q 20 -m 30 -M 0 -o $outputfile1 $file1 > $logfile1 2>&1
-  cutadapt -a "$ADAPTER" -q 20 -m 30 -M 0 -o $outputfile2 $file2 > $logfile2 2>&1
+  # # Run cutadapt separately for each file
+  # logfile1=$output/"${file1_basename%.fastq.gz}_cutadapt_log.txt"
+  # logfile2=$output/"${file2_basename%.fastq.gz}_cutadapt_log.txt"
+  # cutadapt -a "$ADAPTER" -q 20 -m 30 -M 0 -o $outputfile1 $file1 > $logfile1 2>&1
+  # cutadapt -a "$ADAPTER" -q 20 -m 30 -M 0 -o $outputfile2 $file2 > $logfile2 2>&1
 
 }
 
