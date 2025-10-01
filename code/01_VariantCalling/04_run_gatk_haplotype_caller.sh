@@ -14,8 +14,10 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 
 
+## 
+## MxO Genetic Map
 ##
-## GBS variant calling pipeline
+## Variant calling pipeline
 ##
 ## Step 3. Variant calling with GATK haplotype caller
 ##
@@ -72,12 +74,8 @@ if [ ! -d $HAPLODIR ]; then
 fi
 
   
-## Get a list of the bam files
-# Make this an array for parallelization
-BAMFILES=($(find $BAMDIR -name "*.bam"))
-
-
-
+# Create a function to run haplotype caller
+# Input: 1) BAM file, 2) output directory, 3) reference
 run_haplotype_caller() {
   file=$1
   output=$2
@@ -96,5 +94,23 @@ run_haplotype_caller() {
 # Export the function
 export -f run_haplotype_caller
 
+## Run for each reference genome ##
+
+# Subset the "BenLear" alignment files
+BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
 # Run the function in parallel
-parallel -j $NTHREADS run_haplotype_caller {} $haplotype_dir $REFPREFIX ::: ${BAMFILES[@]}
+parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
+
+
+# Subset the "Stevens" alignment files
+STEVENSBAMFILES=($(find $BAMDIR -name "*Stevens*.bam"))
+# Run the function in parallel
+parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $STREFPREFIX ::: ${STEVENSBAMFILES[@]}
+
+
+# Subset the "Oxycoccos" alignment files
+OXYCOCCOSBAMFILES=($(find $BAMDIR -name "*Oxycoccos*.bam"))
+# Run the function in parallel
+parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $OXREFPREFIX ::: ${OXYCOCCOSBAMFILES[@]}
+
+# End of script
