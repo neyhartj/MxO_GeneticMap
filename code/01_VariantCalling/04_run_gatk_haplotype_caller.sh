@@ -96,21 +96,27 @@ export -f run_haplotype_caller
 
 ## Run for each reference genome ##
 
-# Subset the "BenLear" alignment files
-BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
-# Run the function in parallel
-parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
 
+
+# # Subset the "BenLear" alignment files
+# BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
+# # Run the function in parallel
+# parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
+# 
+# wait
 
 # Subset the "Stevens" alignment files
 STEVENSBAMFILES=($(find $BAMDIR -name "*Stevens*.bam"))
 # Run the function in parallel
 parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $STREFPREFIX ::: ${STEVENSBAMFILES[@]}
 
+wait
 
 # Subset the "Oxycoccos" alignment files
 OXYCOCCOSBAMFILES=($(find $BAMDIR -name "*Oxycoccos*.bam"))
 # Run the function in parallel
 parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $OXREFPREFIX ::: ${OXYCOCCOSBAMFILES[@]}
+
+wait
 
 # End of script
