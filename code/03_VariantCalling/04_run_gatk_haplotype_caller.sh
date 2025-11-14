@@ -63,6 +63,21 @@ NTHREADS=$SLURM_JOB_CPUS_PER_NODE
 
 ## Run the pipeline
 
+
+# For each reference genome, make sure that .fai and .dict files exist; create if not
+for REF in $BLREFPREFIX $STREFPREFIX $OXREFPREFIX; do
+  # Check for .fai file
+  if [ ! -f ${REF}.fai ]; then
+    samtools faidx $REF
+  fi  
+  # Check for .dict file
+  DICTFILE="${REF%.*}.dict"
+  if [ ! -f $DICTFILE ]; then
+    gatk CreateSequenceDictionary -R $REF
+  fi
+done
+
+
 # Change working directory
 cd $WD
 
