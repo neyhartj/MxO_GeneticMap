@@ -77,10 +77,16 @@ fi
 ## Run for each reference genome ##
 
 # Find the GVCF files from the BenLear alignment
-BENLEARGVCFFILES=($(find $HAPLODIR -name "*BenLear*.g.vcf.gz"))
+BENLEARGVCFFILES=$(for file in $(find $HAPLODIR -name "*BenLear*.g.vcf.gz"); do echo -n "-V $file "; done)
+# Run indexing
+for file in $(find $HAPLODIR -name "*BenLear*.g.vcf.gz"); do
+  gatk IndexFeatureFile -I $file
+done
+
 # Combine the GVCF files
 BENLEARGVCF=$GENOTYPEDIR/mxo_variant_cohort_BenLear_alignment.g.vcf
-gatk CombineGVCFs -R $BLREFPREFIX $(for file in ${BENLEARGVCFFILES[@]}; do echo -n "-V $file "; done) -O $BENLEARGVCF
+
+gatk CombineGVCFs -R $BLREFPREFIX $BENLEARGVCFFILES -O $BENLEARGVCF
 # Genotype the combined GVCF file
 gatk GenotypeGVCFs -R $BLREFPREFIX -V $BENLEARGVCF -O $GENOTYPEDIR/mxo_variant_cohort_BenLear_alignment.raw.vcf.gz
 
