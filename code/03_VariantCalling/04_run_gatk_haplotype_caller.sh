@@ -4,12 +4,12 @@
 # job standard output will go to the file slurm-%j.out (where %j is the job ID)
 
 #SBATCH -A gifvl_vaccinium
-#SBATCH --job-name="MxO variant calling - haplotype caller"
+#SBATCH --job-name="MxO variant calling - haplotype caller - BenLear"
 #SBATCH -p short
 #SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
-#SBATCH -n 32   # 8 processor core(s) per node X 2 threads per core
-#SBATCH --mem=128G   # maximum memory per node
+#SBATCH -n 64   # 8 processor core(s) per node X 2 threads per core
+#SBATCH --mem=256G   # maximum memory per node
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN,END,FAIL
 
@@ -103,7 +103,9 @@ run_haplotype_caller() {
   outfile=$output/$newfile
 
   # Run haplotype caller
-  gatk HaplotypeCaller -R $ref -I $file -O $outfile -ERC GVCF
+  gatk --java-options "-Xmx8g" HaplotypeCaller -R $ref -I $file -O $outfile -ERC GVCF
+  # Index the feature file
+  gatk IndexFeatureFile -I $outfile
 
 }
 
@@ -114,12 +116,12 @@ export -f run_haplotype_caller
 
 
 
-# # Subset the "BenLear" alignment files
-# BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
-# # Run the function in parallel
-# parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
-# 
-# wait
+# Subset the "BenLear" alignment files
+BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
+# Run the function in parallel
+parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
+
+wait
 
 # Subset the "Stevens" alignment files
 STEVENSBAMFILES=($(find $BAMDIR -name "*Stevens*.bam"))
