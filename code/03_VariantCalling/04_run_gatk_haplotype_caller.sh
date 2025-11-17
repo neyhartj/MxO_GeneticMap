@@ -8,7 +8,7 @@
 #SBATCH -p short
 #SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
-#SBATCH -n 64   # 8 processor core(s) per node X 2 threads per core
+#SBATCH -n 32   # 8 processor core(s) per node X 2 threads per core
 #SBATCH --mem=256G   # maximum memory per node
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN,END,FAIL
