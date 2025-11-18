@@ -4,12 +4,12 @@
 # job standard output will go to the file slurm-%j.out (where %j is the job ID)
 
 #SBATCH -A gifvl_vaccinium
-#SBATCH --job-name="MxO variant calling - haplotype caller"
+#SBATCH --job-name="MxO variant calling - genotype caller"
 #SBATCH -p short
 #SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
-#SBATCH -n 32   # 8 processor core(s) per node X 2 threads per core
-#SBATCH --mem=128G   # maximum memory per node
+#SBATCH -n 8   # 8 processor core(s) per node X 2 threads per core
+#SBATCH --mem=32G   # maximum memory per node
 #SBATCH --mail-user=jeffrey.neyhart@usda.gov   # email address
 #SBATCH --mail-type=BEGIN,END,FAIL
 
@@ -30,7 +30,6 @@ set -o pipefail
 # Load the modules
 module load samtools
 module load gatk
-module load parallel
 
 #####################
 ## Set variables
@@ -78,42 +77,37 @@ fi
 
 # Find the GVCF files from the BenLear alignment
 BENLEARGVCFFILES=$(for file in $(find $HAPLODIR -name "*BenLear*.g.vcf.gz"); do echo -n "-V $file "; done)
-# Run indexing
-for file in $(find $HAPLODIR -name "*BenLear*.g.vcf.gz"); do
-  gatk IndexFeatureFile -I $file
-done
-
 # Combine the GVCF files
 BENLEARGVCF=$GENOTYPEDIR/mxo_variant_cohort_BenLear_alignment.g.vcf
 
-gatk CombineGVCFs -R $BLREFPREFIX $BENLEARGVCFFILES -O $BENLEARGVCF
+gatk --java-options "-Xmx8g" CombineGVCFs -R $BLREFPREFIX $BENLEARGVCFFILES -O $BENLEARGVCF
 # Genotype the combined GVCF file
-gatk GenotypeGVCFs -R $BLREFPREFIX -V $BENLEARGVCF -O $GENOTYPEDIR/mxo_variant_cohort_BenLear_alignment.raw.vcf.gz
+gatk --java-options "-Xmx8g" GenotypeGVCFs -R $BLREFPREFIX -V $BENLEARGVCF -O $GENOTYPEDIR/mxo_variant_cohort_BenLear_alignment.raw.vcf.gz
 
 wait
 
-# # Run for the Stevens reference genome
+# Run for the Stevens reference genome
 
-# # Find the GVCF files from the Stevens alignment
-# STEVENSGVCFFILES=($(find $HAPLODIR -name "*Stevens*.g.vcf.gz"))
-# # Combine the GVCF files
-# STEVENSGVCF=$GENOTYPEDIR/mxo_variant_cohort_Stevens_alignment.g.vcf
-# gatk CombineGVCFs -R $STREFPREFIX $(for file in ${STEVENSGVCFFILES[@]}; do echo -n "-V $file "; done) -O $STEVENSGVCF
-# # Genotype the combined GVCF file
-# gatk GenotypeGVCFs -R $STREFPREFIX -V $STEVENSGVCF -O $GENOTYPEDIR/mxo_variant_cohort_Stevens_alignment.raw.vcf.gz
+# Find the GVCF files from the Stevens alignment
+STEVENSGVCFFILES=($(find $HAPLODIR -name "*Stevens*.g.vcf.gz"))
+# Combine the GVCF files
+STEVENSGVCF=$GENOTYPEDIR/mxo_variant_cohort_Stevens_alignment.g.vcf
+gatk --java-options "-Xmx8g" CombineGVCFs -R $STREFPREFIX $(for file in ${STEVENSGVCFFILES[@]}; do echo -n "-V $file "; done) -O $STEVENSGVCF
+# Genotype the combined GVCF file
+gatk --java-options "-Xmx8g" GenotypeGVCFs -R $STREFPREFIX -V $STEVENSGVCF -O $GENOTYPEDIR/mxo_variant_cohort_Stevens_alignment.raw.vcf.gz
 
-# wait
+wait
 
-# # Run for the Oxycoccos reference genome
-# # Find the GVCF files from the Oxycoccos alignment
-# OXYCOCCOSGVCFFILES=($(find $HAPLODIR -name "*Oxycoccos*.g.vcf.gz"))
-# # Combine the GVCF files
-# OXYCOCCOSGVCF=$GENOTYPEDIR/mxo_variant_cohort_Oxycoccos_alignment.g.vcf
-# gatk CombineGVCFs -R $OXREFPREFIX $(for file in ${OXYCOCCOSGVCFFILES[@]}; do echo -n "-V $file "; done) -O $OXYCOCCOSGVCF
-# # Genotype the combined GVCF file
-# gatk GenotypeGVCFs -R $OXREFPREFIX -V $OXYCOCCOSGVCF -O $GENOTYPEDIR/mxo_variant_cohort_Oxycoccos_alignment.raw.vcf.gz
+# Run for the Oxycoccos reference genome
+# Find the GVCF files from the Oxycoccos alignment
+OXYCOCCOSGVCFFILES=($(find $HAPLODIR -name "*Oxycoccos*.g.vcf.gz"))
+# Combine the GVCF files
+OXYCOCCOSGVCF=$GENOTYPEDIR/mxo_variant_cohort_Oxycoccos_alignment.g.vcf
+gatk --java-options "-Xmx8g" CombineGVCFs -R $OXREFPREFIX $(for file in ${OXYCOCCOSGVCFFILES[@]}; do echo -n "-V $file "; done) -O $OXYCOCCOSGVCF
+# Genotype the combined GVCF file
+gatk --java-options "-Xmx8g"  GenotypeGVCFs -R $OXREFPREFIX -V $OXYCOCCOSGVCF -O $GENOTYPEDIR/mxo_variant_cohort_Oxycoccos_alignment.raw.vcf.gz
 
-# wait
+wait
 
 # End of script
 
