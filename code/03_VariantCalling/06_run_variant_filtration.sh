@@ -59,7 +59,7 @@ MINQ=10 # Minimum QUAL score
 cd $WD
 
 # List raw.vcf.gz files
-VARIANTFILES=$GENOTYPEDIR/*_cohort.raw.vcf.gz
+VARIANTFILES=$(find $GENOTYPEDIR -name "*_alignment.raw.vcf.gz")
 
 # Iterate over the files
 for FILE in $VARIANTFILES; do
