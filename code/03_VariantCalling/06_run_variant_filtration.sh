@@ -69,9 +69,9 @@ for FILE in $VARIANTFILES; do
 	bcftools stats $FILE > $OUTPUTSTAT
 
 	### Filter for production SNPS ##
-	OUTPUT=${VARIANTFILE%".raw.vcf.gz"}_filtered
+	OUTPUT=${FILE%".raw.vcf.gz"}_filtered
 
-	vcftools --gzvcf $VARIANTFILE \
+	vcftools --gzvcf $FILE \
 		--remove-indels \
 		--min-alleles 2 \
 		--max-alleles 2 \
