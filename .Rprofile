@@ -1,5 +1,5 @@
 library(tidyverse)
 proj_dir <- getwd()
 data_dir <- file.path(proj_dir, 'data')
-results_dir <- file.path(proj_dir, 'output')
-fig_dir <- file.path(proj_dir, 'analysis')
+results_dir <- file.path(proj_dir, 'results')
+fig_dir <- file.path(proj_dir, 'figures')

@@ -6,7 +6,7 @@
 #SBATCH -A gifvl_vaccinium
 #SBATCH --job-name="MxO variant calling - variant filtration"
 #SBATCH -p short
-#SBATCH -t 08:00:00   # walltime limit (HH:MM:SS)
+#SBATCH -t 01:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
 #SBATCH -n 2   # 8 processor core(s) per node X 2 threads per core
 #SBATCH --mem=32G   # maximum memory per node
@@ -42,8 +42,8 @@ VARIANTDIR=$VARDIR/variants/gatk/
 GENOTYPEDIR=$VARIANTDIR/genotype_caller
 
 # Filtering parameters for production SNPs
-MAXMISSING=0.50
-MINDP=5
+MAXMISSING=0.20 # Maximum missing data proportion
+MINDP=10 # Minimum read depth
 MINMAC=1 # Remove monomorphic SNPs
 MINQ=10 # Minimum QUAL score
 
@@ -57,6 +57,9 @@ MINQ=10 # Minimum QUAL score
 
 # Change working directory
 cd $WD
+
+# The max-missing input for VCFtools is 1 - missing proportion
+VCFMAXMISSING=$(echo "1 - $MAXMISSING" | bc)
 
 # List raw.vcf.gz files
 VARIANTFILES=$(find $GENOTYPEDIR -name "*_alignment.raw.vcf.gz")
@@ -75,7 +78,7 @@ for FILE in $VARIANTFILES; do
 		--remove-indels \
 		--min-alleles 2 \
 		--max-alleles 2 \
-		--max-missing $MAXMISSING \
+		--max-missing $VCFMAXMISSING \
 		--mac $MINMAC \
 		--recode \
 		--recode-INFO-all \

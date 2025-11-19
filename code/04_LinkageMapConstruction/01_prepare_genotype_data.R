@@ -15,6 +15,7 @@ library(vcfR)
 library(polyBreedR)
 library(onemap)
 library(berryBreedR)
+library(mappoly)
 
 pop_metadata <- read_csv("data/population_metadata.csv")
 
@@ -40,7 +41,7 @@ f1s <- c("CNJ98-325-33", "CNJ98-309-19")
 reference_genome <- "BenLear"
 
 # VCF file to use
-vcf_file <- file.path(cran_dir, "Genotyping/2023/RAPiD/Data/cran1571_BenLearv1_snps_alias_renamed.vcf.gz")
+vcf_file <- file.path(results_dir, "/variant_calling/variants/gatk/genotype_caller/mxo_variant_cohort_BenLear_alignment_filtered.vcf.gz")
 
 # Load the file
 vcf_in <- read.vcfR(file = vcf_file)
