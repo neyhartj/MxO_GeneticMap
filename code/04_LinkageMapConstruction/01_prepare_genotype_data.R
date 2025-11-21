@@ -36,330 +36,231 @@ f1s <- c("CNJ98-325-33", "CNJ98-309-19")
 
 
 
-# Process the Ben Lear reference SNPs -------------------------------------
+# Process SNP data ----------------------
 
-reference_genome <- "BenLear"
+# List VCF files
+vcf_file_list <- list.files(path = results_dir, pattern = "vcf.gz", full.names = TRUE, recursive = TRUE)
 
-# VCF file to use
-vcf_file <- file.path(results_dir, "/variant_calling/variants/gatk/genotype_caller/mxo_variant_cohort_BenLear_alignment_filtered.vcf.gz")
+# Iterate
+for (vcf_file in vcf_file_list) {
 
-# Load the file
-vcf_in <- read.vcfR(file = vcf_file)
-
-##
-## Subset genotypes
-##
-clones_subset <- c("STEVENS", "CNJ98-325-33", "NJ96-20", "CNJ98-309-19",
-                   subset(pop_metadata, category == "S1", individual, drop = TRUE))
-
-length(clones_subset)
-ind_keep <- intersect(clones_subset, colnames(vcf_in@gt))
-length(ind_keep)
-setdiff(clones_subset, ind_keep)
-
-vcf_in1 <- vcf_in[,c("FORMAT", ind_keep)]
-vcf_in1
-
-##
-## Subset chromosomes
-##
-idx <- which(vcf_in1@fix[,"CHROM"] != "Vmac_Unknown")
-vcf_in1 <- vcf_in1[idx, ]
-vcf_in1
-
-
-##
-## Subset markers - remove monomorphic
-##
-gt <- extract.gt(x = vcf_in1, element = "GT")
-ds <- GT2DS(GT = gt, n.core = 12)
-
-sdx <- apply(X = ds, MARGIN = 1, FUN = sd, na.rm = TRUE)
-idx <- which(sdx > 0)
-
-# Subset
-vcf_in1 <- vcf_in1[idx, ]
-vcf_in1
-
-
-## Filter out (i.e. replace with NA) genotype calls with insufficient allele depth
-
-# Extract the AD information
-ad <- extract.gt(x = vcf_in1, element = "AD")
-# Extract dp information
-dp <- extract.gt(x = vcf_in1, element = "DP")
-# Extract the GT information; make a copy
-gt1 <- gt <- extract.gt(x = vcf_in1, element = "GT")
-
-
-# Matrix of logicals for hets
-is_het <- gt == "0/1" | gt == "1/0"
-
-# Split to ref and alt
-ad_ref <- ADsplit(AD = ad, ALT = FALSE)
-ad_alt <- ADsplit(AD = ad, ALT = TRUE)
-
-# Apply a minimum depth filter to the AD data strings
-# First for homozygous
-which_min_ad_hom <- !is_het & (ad_ref >= min_AD | ad_alt >= min_AD)
-which_min_ad_het <- is_het & (ad_ref >= min_AD & ad_alt >= min_AD)
-which_min_ad <- which_min_ad_hom | which_min_ad_het
-
-
-# If a sample is NA or does not meet the AD threshold, set as missing (./.)
-if (any(is.na(gt1))) {
-  gt1[is.na(gt1)] <- "./."
-}
-
-if (any(!which_min_ad)) {
-  gt1[!which_min_ad] <- "./."
-}
-
-
-
-## Filter on missingness
-
-# Calculate SNP missingness
-snp_missing <- rowMeans(gt1 == "./.")
-hist(snp_missing)
-# subset
-idx <- which(snp_missing <= max_snp_missing)
-gt2 <- gt1[idx, , drop = FALSE]
-dim(gt2)
-
-ad1 <- ad[idx,]
-dp1 <- dp[idx,]
-
-fixed <- getFIX(vcf_in1)
-fixed1 <- fixed[idx, ]
-info <- getINFO(vcf_in1)
-info1 <- info[idx]
-
-
-
-
-
-
-
-
-# Load the VCF file -------------------------------------------------------
-
-# List the VCF files to use
-vcf_file1 <- list.files(path = "data_raw/", pattern = "*.vcf.gz", full.names = TRUE)
-vcf_file2 <- file.path(cran_dir, "Genotyping/2023/RAPiD/Data/cran1571_BenLearv1_snps_alias_renamed.vcf.gz")
-vcf_files <- c(vcf_file1, vcf_file2)
-
-# Iterate over VCF files
-for (file in vcf_files) {
-  vcf_in <- read.vcfR(file = file)
-
-  # Determine the reference genome
-  if (any(grepl(pattern = "ben", x = vcf_in@meta, ignore.case = T))) {
-    reference_genome <- "BenLear"
-  } else if (any(grepl(pattern = "stev", x = vcf_in@meta, ignore.case = T))) {
-    reference_genome <- "Stevens"
+  if (grepl(pattern = "BenLear", x = basename(vcf_file))) {
+    reference_genome <-  "BenLear"
+  } else if (grepl(pattern = "Oxycoccos", x = basename(vcf_file))) {
+    reference_genome <-  "Oxycoccos"
+  } else if (grepl(pattern = "Stevens", x = basename(vcf_file))) {
+    reference_genome <-  "Stevens"
   }
 
-  # Replace sample names with geno ids
-  gt_colnames <- colnames(vcf_in@gt)
-  idx <- match(x = gt_colnames, table = pop_metadata$RG_Sample_Code, nomatch = 0)
-  gt_colnames <- c("FORMAT", pop_metadata$individual[idx])
-  vcf_in1 <- vcf_in
-  colnames(vcf_in1@gt) <- gt_colnames
-
-# # Subset the VCF for only the relevant clones
-# clones_subset <- c("ST", "CNJ98-325-33_rep1", "CNJ98-325-33_rep2", "NJ96-20_rep1", "NJ96-20_rep2", "CNJ98-309-19",
-#                    subset(pop_metadata, category == "S1", individual, drop = TRUE))
-clones_subset <- c("STEVENS", "CNJ98-325-33", "NJ96-20", "CNJ98-309-19",
-                   subset(pop_metadata, category == "S1", individual, drop = TRUE))
-
-ind_keep <- intersect(clones_subset, colnames(vcf_in1@gt))
-length(ind_keep)
-setdiff(clones_subset, ind_keep)
-
-vcf_in1 <- vcf_in1[,c("FORMAT", ind_keep)]
-vcf_in1
-
-# # Check duplicates and retain the one with the lowest missing data
-# dup_ind <- grep(pattern = "_rep", x = clones_subset, value = TRUE)
-# dup_clones_uniq <- unique(sub(pattern = "_rep.*", replacement = "", x = dup_clones))
-# for (dup in dup_clones_uniq) {
-#   dup_ind_i <- grep(pattern = dup, x = dup_ind, value = TRUE)
-#   dup_gt <- vcf_in1@gt[,dup_ind_i]
-#   dup_gt_miss <- colMeans(apply(X = dup_gt, MARGIN = 2, FUN = grepl, pattern = "\\./\\."))
-#   dup_ind_i_drop <- dup_ind_i[which.max(dup_gt_miss)]
-#   ind_keep <- setdiff(ind_keep, dup_ind_i_drop)
-# }
-#
-# length(ind_keep)
-# vcf_in1 <- vcf_in[,c("FORMAT", ind_keep)]
-# vcf_in1
-
-# # Rename
-# ind_names <- colnames(vcf_in1@gt)[-1]
-# ind_names <- sub(pattern = "_rep.*", replacement = "", x = ind_names)
-# ind_names <- sub(pattern = "ST", replacement = "STEVENS", x = ind_names, ignore.case = FALSE)
-# colnames(vcf_in1@gt)[-1] <- ind_names
+  # Load the file
+  vcf_in <- read.vcfR(file = vcf_file)
 
 
-# Filter the VCF -----------------------------------------------
+  # Name of genotypes
+  gt_names <- colnames(vcf_in@gt)
+  gt_names <- sub(pattern = "RAPiD-Genomics_F310_", replacement = "", x = gt_names)
+  gt_names <- sub(pattern = "_i5-.*", replacement = "", x = gt_names)
+  idx <- match(x = gt_names, table = pop_metadata$RG_Sample_Code, nomatch = 0)
+  gt_names[-1] <- pop_metadata$individual[idx]
 
-# Remove monomorphic markers
-gt <- extract.gt(x = vcf_in1, element = "GT")
-ds <- GT2DS(GT = gt, n.core = 12)
-
-sdx <- apply(X = ds, MARGIN = 1, FUN = sd, na.rm = TRUE)
-idx <- which(sdx > 0)
-
-# Subset
-vcf_in1 <- vcf_in1[idx, ]
-vcf_in1
+  colnames(vcf_in@gt) <- gt_names
 
 
-## Filter out (i.e. replace with NA) genotype calls with insufficient allele depth
+  ##
+  ## Subset genotypes
+  ##
+  clones_subset <- c("STEVENS", "CNJ98-325-33", "NJ96-20", "CNJ98-309-19",
+                     subset(pop_metadata, category == "S1", individual, drop = TRUE))
 
-# Extract the AD information
-ad <- extract.gt(x = vcf_in1, element = "AD")
-# Extract dp information
-dp <- extract.gt(x = vcf_in1, element = "DP")
-# Extract the GT information; make a copy
-gt1 <- gt <- extract.gt(x = vcf_in1, element = "GT")
+  length(clones_subset)
+  ind_keep <- intersect(clones_subset, colnames(vcf_in@gt))
+  length(ind_keep)
+  setdiff(clones_subset, ind_keep)
 
+  vcf_in1 <- vcf_in[,c("FORMAT", ind_keep)]
+  vcf_in1
 
-# Matrix of logicals for hets
-is_het <- gt == "0/1" | gt == "1/0"
+  ##
+  ## Subset chromosomes
+  ##
+  idx <- which(vcf_in1@fix[,"CHROM"] != "Unknown")
+  vcf_in1 <- vcf_in1[idx, ]
+  vcf_in1
 
-# Split to ref and alt
-ad_ref <- ADsplit(AD = ad, ALT = FALSE)
-ad_alt <- ADsplit(AD = ad, ALT = TRUE)
-
-# Apply a minimum depth filter to the AD data strings
-# First for homozygous
-which_min_ad_hom <- !is_het & (ad_ref >= min_AD | ad_alt >= min_AD)
-which_min_ad_het <- is_het & (ad_ref >= min_AD & ad_alt >= min_AD)
-which_min_ad <- which_min_ad_hom | which_min_ad_het
-
-
-# If a sample is NA or does not meet the AD threshold, set as missing (./.)
-if (any(is.na(gt1))) {
-  gt1[is.na(gt1)] <- "./."
-}
-
-if (any(!which_min_ad)) {
-  gt1[!which_min_ad] <- "./."
-}
+  ##
+  ## Sort on chromosome and position
+  ##
+  vcf_in1 <- vcf_in1[order(vcf_in1@fix[,"CHROM"], as.numeric(vcf_in1@fix[,"POS"])), ]
+  unique(vcf_in1@fix[,"CHROM"])
 
 
+  ##
+  ## Subset markers - remove monomorphic
+  ##
+  gt <- extract.gt(x = vcf_in1, element = "GT")
+  ds <- GT2DS(GT = gt, n.core = 12)
 
-## Filter on missingness
+  sdx <- apply(X = ds, MARGIN = 1, FUN = sd, na.rm = TRUE)
+  idx <- which(sdx > 0)
 
-# Calculate SNP missingness
-snp_missing <- rowMeans(gt1 == "./.")
-hist(snp_missing)
-# subset
-idx <- which(snp_missing <= max_snp_missing)
-gt2 <- gt1[idx, , drop = FALSE]
-dim(gt2)
-
-ad1 <- ad[idx,]
-dp1 <- dp[idx,]
-
-fixed <- getFIX(vcf_in1)
-fixed1 <- fixed[idx, ]
-info <- getINFO(vcf_in1)
-info1 <- info[idx]
-
-# Remove SNPs that are not on chromosomes -----------------------------------
-
-max_pos_char <- max(nchar(fixed1[,"POS"]))
-
-# Fix the chromosome names
-if (reference_genome == "BenLear") {
-  fixed1[,"CHROM"] <- sub(pattern = "Vmac_", replacement = "", x = fixed1[,"CHROM"])
-} else {
-  fixed1[,"CHROM"] <- paste0("chr", str_pad(string = parse_number(fixed1[,"CHROM"]), width = 2, side = "left", pad = "0"))
-}
-
-fixed1[,"ID"] <- paste0(fixed1[,"CHROM"], "_", str_pad(string = fixed1[,"POS"], width = max_pos_char, side = "left", pad = "0"))
+  # Subset
+  vcf_in1 <- vcf_in1[idx, ]
+  vcf_in1
 
 
-idx <- grep(pattern = "^chr[0-9]{2}$", x = fixed1[,"CHROM"])
-fixed2 <- fixed1[idx, ]
-info2 <- info1[idx]
+  ## Filter out (i.e. replace with NA) genotype calls with insufficient allele depth
 
-gt3 <- gt2[idx, ]
-ad3 <- ad1[idx, ]
-dp3 <- dp1[idx, ]
+  # Extract the AD information
+  ad <- extract.gt(x = vcf_in1, element = "AD")
+  # Extract dp information
+  dp <- extract.gt(x = vcf_in1, element = "DP")
+  # Extract the GT information; make a copy
+  gt1 <- gt <- extract.gt(x = vcf_in1, element = "GT")
 
-dim(gt3)
 
-# Rename the entries ------------------------------------------------------
+  # Matrix of logicals for hets
+  is_het <- gt == "0/1" | gt == "1/0"
 
-vcf_sample_names <- colnames(gt3)
-new_sample_names <- update_alias(x = vcf_sample_names, alias = as.data.frame(select(pop_metadata, individual, RG_Sample_Code)))
+  # Split to ref and alt
+  ad_ref <- ADsplit(AD = ad, ALT = FALSE)
+  ad_alt <- ADsplit(AD = ad, ALT = TRUE)
 
-colnames(gt3) <- new_sample_names
-colnames(ad3) <- new_sample_names
-colnames(dp3) <- new_sample_names
+  # Apply a minimum depth filter to the AD data strings
+  # First for homozygous
+  which_min_ad_hom <- !is_het & (ad_ref >= min_AD | ad_alt >= min_AD)
+  which_min_ad_het <- is_het & (ad_ref >= min_AD & ad_alt >= min_AD)
+  which_min_ad <- which_min_ad_hom | which_min_ad_het
+
+
+  # If a sample is NA or does not meet the AD threshold, set as missing (./.)
+  if (any(is.na(gt1))) {
+    gt1[is.na(gt1)] <- "./."
+  }
+
+  if (any(!which_min_ad)) {
+    gt1[!which_min_ad] <- "./."
+  }
+
+
+
+  ## Filter on missingness
+
+  # Calculate SNP missingness
+  snp_missing <- rowMeans(gt1 == "./.")
+  hist(snp_missing)
+  # subset
+  idx <- which(snp_missing <= max_snp_missing)
+  gt2 <- gt1[idx, , drop = FALSE]
+  dim(gt2)
+
+  ad1 <- ad[idx,]
+  dp1 <- dp[idx,]
+
+  fixed <- getFIX(vcf_in1)
+  fixed1 <- fixed[idx, ]
+  info <- getINFO(vcf_in1)
+  info1 <- info[idx]
+
+  fixed2 <- cbind(fixed1, INFO = info1)
+
+  # Create a newer vcf object
+  vcf_in2 <- vcf_in1
+  vcf_in2@gt <- gt
+  vcf_in2@fix <- fixed2
 
 
 
 
-# Filter on expected genotype frequencies in the parents and F1 ------------------------------------------------
+  ## Remove SNPs that are not on chromosomes -----------------------------------
 
-# First remove SNPs where STEVENS is homozygous alternate
-#
-# DO NOT DO THIS IF THE REFERENCE IS BEN LEAR OR OXYCOCCOS
+  max_pos_char <- max(nchar(fixed2[,"POS"]))
 
-if (reference_genome == "BenLear") {
-  stevens_hom_alt <- integer(0)
-} else {
-  stevens_hom_alt <- which(gt3[,"STEVENS"] == "1/1")
-}
+  # Fix the chromosome names
+  if (reference_genome == "BenLear") {
+    fixed2[,"CHROM"] <- sub(pattern = "Vmac_", replacement = "", x = fixed2[,"CHROM"])
+  } else {
+    fixed2[,"CHROM"] <- paste0("chr", str_pad(string = parse_number(fixed2[,"CHROM"]), width = 2, side = "left", pad = "0"))
+  }
 
-
-
-# Next remove SNPs where the F1s are not hets
-f1_not_het <- gt3[, f1s] != "0/1" & gt3[, f1s] != "0|1"
-f1_not_het <- which(apply(X = f1_not_het, MARGIN = 1, FUN = all))
-
-idx_rm <- union(stevens_hom_alt, f1_not_het)
-length(idx_rm)
-
-# Filter
-gt4 <- gt3[-idx_rm, ]
-ad4 <- ad3[-idx_rm, ]
-dp4 <- dp3[-idx_rm, ]
-fixed4 <- fixed2[-idx_rm, ]
-
-# # Subset only known chromosomes
-# idx <- grep(pattern = "^chr[0-9]{2}$", x = fixed3[,"CHROM"])
-# gt4 <- gt4[idx, ]
-# ad4 <- ad4[idx, ]
-# dp4 <- dp4[idx, ]
-# fixed4 <- fixed3[idx, ]
+  fixed2[,"ID"] <- paste0(fixed2[,"CHROM"], "_", str_pad(string = fixed2[,"POS"], width = max_pos_char, side = "left", pad = "0"))
 
 
-dim(gt4)
+  idx <- grep(pattern = "^chr[0-9]{2}$", x = fixed2[,"CHROM"])
+  fixed2 <- fixed2[idx, ]
+  info2 <- info1[idx]
 
-# Save a new VCF ----------------------------------------------------------
+  gt3 <- gt2[idx, ]
+  ad3 <- ad1[idx, ]
+  dp3 <- dp1[idx, ]
 
-# Recalculate info
-DP <- apply(ad4, 2, function(x) {
-  sapply(strsplit(x, split = ",", fixed = T), function(u) {
-    sum(as.integer(u))
+  dim(gt3)
+
+
+
+  ## Rename the entries ------------------------------------------------------
+
+  vcf_sample_names <- colnames(gt3)
+  new_sample_names <- update_alias(x = vcf_sample_names, alias = as.data.frame(select(pop_metadata, individual, RG_Sample_Code)))
+
+  colnames(gt3) <- new_sample_names
+  colnames(ad3) <- new_sample_names
+  colnames(dp3) <- new_sample_names
+
+
+
+
+  ## Filter on expected genotype frequencies in the parents and F1 ------------------------------------------------
+
+  # First remove SNPs where STEVENS is homozygous alternate
+  #
+  # DO NOT DO THIS IF THE REFERENCE IS BEN LEAR OR OXYCOCCOS
+
+  if (reference_genome == "BenLear") {
+    stevens_hom_alt <- integer(0)
+  } else {
+    stevens_hom_alt <- which(gt3[,"STEVENS"] == "1/1")
+  }
+
+
+
+  # Next remove SNPs where the F1s are not hets
+  f1_not_het <- gt3[, f1s] != "0/1" & gt3[, f1s] != "0|1"
+  f1_not_het <- which(apply(X = f1_not_het, MARGIN = 1, FUN = all))
+
+  idx_rm <- union(stevens_hom_alt, f1_not_het)
+  length(idx_rm)
+
+  # Filter
+  gt4 <- gt3[-idx_rm, ]
+  ad4 <- ad3[-idx_rm, ]
+  dp4 <- dp3[-idx_rm, ]
+  fixed3 <- fixed2[-idx_rm, ]
+
+  dim(gt4)
+
+
+
+  ## Save a new VCF ----------------------------------------------------------
+
+  # Recalculate info
+  DP <- apply(ad4, 2, function(x) {
+    sapply(strsplit(x, split = ",", fixed = T), function(u) {
+      sum(as.integer(u))
+    })
   })
-})
-NS <- rowSums(DP > 0, na.rm = TRUE)
-DP.AVG <- rowMeans(DP, na.rm = TRUE)
-alt <- apply(ad4, 1, function(x) { sum(as.integer(sub(pattern = "([0-9]{1,})(,)([0-9]{1,})", replacement = "\\3", x = x)), na.rm = TRUE) })
-AF <- round(alt/rowSums(DP, na.rm = TRUE), 3)
-AF[is.na(AF)] <- "."
-info_toprint <- polyBreedR:::make_info(cbind(NS = NS, DP.AVG = round(DP.AVG, 1), AF = AF))
+  NS <- rowSums(DP > 0, na.rm = TRUE)
+  DP.AVG <- rowMeans(DP, na.rm = TRUE)
+  alt <- apply(ad4, 1, function(x) { sum(as.integer(sub(pattern = "([0-9]{1,})(,)([0-9]{1,})", replacement = "\\3", x = x)), na.rm = TRUE) })
+  AF <- round(alt/rowSums(DP, na.rm = TRUE), 3)
+  AF[is.na(AF)] <- "."
+  info_toprint <- polyBreedR:::make_info(cbind(NS = NS, DP.AVG = round(DP.AVG, 1), AF = AF))
 
-fixed_toprint = cbind(fixed4, INFO = info_toprint)
-filename_out <- "data/mxo_benlear-ref_variants_processed.vcf.gz"
-write_vcf(filename = filename_out, fixed = fixed_toprint, geno = list(GT = gt4, AD = ad4, DP = DP))
+  fixed4 <- fixed3[, which(colnames(fixed3) != "INFO")]
+  fixed_toprint = cbind(fixed4, INFO = info_toprint)
+  filename_out <- sub(pattern = "X", replacement = reference_genome, "data/mxo_variant_cohort_X_alignment_variants_processed.vcf.gz", ignore.case = FALSE)
+  write_vcf(filename = filename_out, fixed = fixed_toprint, geno = list(GT = gt4, AD = ad4, DP = DP))
+
+}
 
 
 
@@ -380,6 +281,9 @@ pop_by_family <- pop_metadata %>%
 for (family in pop_by_family) {
   vcf_in_family <- vcf_in2[, c("FORMAT", family)]
   f1 <- intersect(family, f1s)
+
+  # onemap_in <- onemap_read_vcfR(vcfR.object = vcf_in_family, cross = "f2",
+  #                               parent1 = "STEVENS", parent2 = "NJ96-20", f1 = f1, verbose = TRUE)
 
   family_gt <- extract.gt(x = vcf_in_family, element = "GT")
   # Convert phased to unphased gt

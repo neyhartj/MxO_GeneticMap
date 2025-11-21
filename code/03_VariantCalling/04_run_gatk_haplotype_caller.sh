@@ -38,18 +38,20 @@ module load parallel
 
 # Working directory
 WD=/project/gifvl_vaccinium/MxO_GeneticMap
+TEMPDIR=/90daydata/gifvl_vaccinium/MxO_GeneticMap
+
 VARDIR=$WD/results/variant_calling
 
 # Path to directory containing the BAM files
-BAMDIR=$VARDIR/alignment/
+BAMDIR=$TEMPDIR/variant_calling/alignment/
 
 # Prefix of the indexed reference genomes
-BLREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vaccinium_macrocarpon_BenLear_v2.fasta
+BLREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vmacrocarpon_BenLear_v1-scaffolds.fasta
 STREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/V_macrocarpon_Stevens_v1.fasta
-OXREFPREFIX=//project/gifvl_vaccinium/MxO_GeneticMap/results/genome_scaffolding_ragtag/Voxycoccos_NJ96-20_v1_ragtag_scaffolded/Voxycoccos_NJ96-20_v1_ragtag_scaffold.fasta
+OXREFPREFIX=/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_scaffolding_ragtag/Voxycoccos_NJ96-20_v1_ragtag_scaffolded/Voxycoccos_NJ96-20_v1_ragtag_scaffold.fasta
 
 # Directory to output vcf files
-VARIANTDIR=$VARDIR/variants/gatk/
+VARIANTDIR=$TEMPDIR/variant_calling/variants/gatk/
 
 
 # Number of threads available

@@ -35,6 +35,8 @@ module load samtools
 
 # Working directory
 WD=/project/gifvl_vaccinium/MxO_GeneticMap
+TEMPDIR=/90daydata/gifvl_vaccinium/MxO_GeneticMap
+
 VARDIR=$WD/results/variant_calling
 
 # Path to directory containing the FASTQ files
@@ -42,13 +44,14 @@ FASTQDIR=$WD/results/variant_calling/cleaned_fastq_files/
 
 
 # Prefix of the indexed reference genomes
-BLREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vaccinium_macrocarpon_BenLear_v2.fasta
+BLREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vmacrocarpon_BenLear_v1-scaffolds.fasta
 STREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/V_macrocarpon_Stevens_v1.fasta
-OXREFPREFIX=//project/gifvl_vaccinium/MxO_GeneticMap/results/genome_scaffolding_ragtag/Voxycoccos_NJ96-20_v1_ragtag_scaffolded/Voxycoccos_NJ96-20_v1_ragtag_scaffold.fasta
+OXREFPREFIX=/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_scaffolding_ragtag/Voxycoccos_NJ96-20_v1_ragtag_scaffolded/Voxycoccos_NJ96-20_v1_ragtag_scaffold.fasta
 
 
 # Directory to output alignment files
-ALIGNDIR=$VARDIR/alignment/
+# Putting the output in 90Daydata to save space on project directory
+ALIGNDIR=$TEMPDIR/variant_calling/alignment/
 
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
