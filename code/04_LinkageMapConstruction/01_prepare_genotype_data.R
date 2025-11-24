@@ -265,104 +265,147 @@ for (vcf_file in vcf_file_list) {
 
 
 
-# Create vcf objects for each family --------------------------------------
+# Create r/qtl objects for each family --------------------------------------
 
-vcf_filename <- filename_out
-# vcf_in2 <- read.vcfR(file = vcf_filename)
-vcf_in2 <- read.vcfR(file = vcf_filename)
-vcf_in2
+for (reference_genome in c("BenLear", "Stevens", "Oxycoccos")) {
 
-# split pop metadata by the F1 individual
-pop_by_family <- pop_metadata %>%
-  split(.$S0_name) %>%
-  purrr::map(~select(.x, individual, parent1, parent2, S0_name) %>% unlist() %>% unique() %>% intersect(., colnames(vcf_in2@gt)))
+  pattern <- sub(pattern = "X", replacement = reference_genome, x = ".*X.*.vcf.gz")
 
-# For each family, create a onemap object; then convert it for use in R/qtl
-for (family in pop_by_family) {
-  vcf_in_family <- vcf_in2[, c("FORMAT", family)]
-  f1 <- intersect(family, f1s)
+  vcf_filename <- list.files(path = data_dir, pattern = pattern, full.names = TRUE)
+  # vcf_in2 <- read.vcfR(file = vcf_filename)
+  vcf_in2 <- read.vcfR(file = vcf_filename)
+  vcf_in2
 
-  # onemap_in <- onemap_read_vcfR(vcfR.object = vcf_in_family, cross = "f2",
-  #                               parent1 = "STEVENS", parent2 = "NJ96-20", f1 = f1, verbose = TRUE)
+  # split pop metadata by the F1 individual
+  pop_by_family <- pop_metadata %>%
+    split(.$S0_name) %>%
+    purrr::map(~select(.x, individual, parent1, parent2, S0_name) %>% unlist() %>% unique() %>% intersect(., colnames(vcf_in2@gt)))
 
-  family_gt <- extract.gt(x = vcf_in_family, element = "GT")
-  # Convert phased to unphased gt
-  family_gt <- sub(pattern = "\\|", replacement = "/", x = family_gt)
-  # Extract the GT data for the parents and the F1
-  parents_f1 <- family_gt[,c("STEVENS", "NJ96-20", f1)]
+  # For each family, create a onemap object; then convert it for use in R/qtl
+  for (family in pop_by_family) {
+    vcf_in_family <- vcf_in2[, c("FORMAT", family)]
 
-  # Impute
-  parents_f1_1 <- parents_f1
-  # Any F1 genotype is a het if Stevens is 0/0 and Oxy is 1/1 or vice versa
-  stevens_00_oxy_11 <- parents_f1_1[,"STEVENS"] == "0/0" & parents_f1_1[,"NJ96-20"] == "1/1"
-  sum(stevens_00_oxy_11, na.rm = TRUE)
-  parents_f1_1[stevens_00_oxy_11, f1] <- "0/1"
+    f1 <- intersect(family, f1s)
 
-  # Use homozygous alternate for stevens if the reference genome is not stevens
-  if (reference_genome != "Stevens") {
-    stevens_11_oxy_00 <- parents_f1_1[,"STEVENS"] == "1/1" & parents_f1_1[,"NJ96-20"] == "0/0"
-    sum(stevens_11_oxy_00, na.rm = TRUE)
-    parents_f1_1[stevens_11_oxy_00, f1] <- "0/1"
-    dim(parents_f1_1)
-  } else if (reference_genome == "Stevens") {
-    # If Stevens, set all Stevens genotypes that are not 0/0 to missing
-    stevens_01 <- parents_f1_1[,"STEVENS"] == "0/1"
-    parents_f1_1[stevens_01, "STEVENS"] <- "./."
+    family_gt <- extract.gt(x = vcf_in_family, element = "GT")
+    # Convert phased to unphased gt
+    family_gt <- sub(pattern = "\\|", replacement = "/", x = family_gt)
+    # Extract the GT data for the parents and the F1
+    parents_f1 <- family_gt[,c("STEVENS", "NJ96-20", f1)]
+
+    ####
+    #### Impute ####
+    ####
+    parents_f1_1 <- parents_f1
+    # Any F1 genotype is a het if Stevens is 0/0 and Oxy is 1/1 or vice versa
+    stevens_00_oxy_11 <- parents_f1_1[,"STEVENS"] == "0/0" & parents_f1_1[,"NJ96-20"] == "1/1"
+    sum(stevens_00_oxy_11, na.rm = TRUE)
+    parents_f1_1[stevens_00_oxy_11, f1] <- "0/1"
+
+    # Use homozygous alternate for stevens if the reference genome is not stevens
+    if (reference_genome != "Stevens") {
+      stevens_11_oxy_00 <- parents_f1_1[,"STEVENS"] == "1/1" & parents_f1_1[,"NJ96-20"] == "0/0"
+      sum(stevens_11_oxy_00, na.rm = TRUE)
+      parents_f1_1[stevens_11_oxy_00, f1] <- "0/1"
+      dim(parents_f1_1)
+    } else if (reference_genome == "Stevens") {
+      # If Stevens, set all Stevens genotypes that are not 0/0 to missing
+      stevens_01 <- parents_f1_1[,"STEVENS"] == "0/1"
+      parents_f1_1[stevens_01, "STEVENS"] <- "./."
+    }
+
+    # Remove missing and non-hets in the f1
+    parents_f1_2 <- parents_f1_1[!is.na(parents_f1_1[, f1]), ]
+    parents_f1_3 <- parents_f1_2[parents_f1_2[, f1] == "0/1", ]
+    dim(parents_f1_3)
+
+    # Attempt to reconstruct the parent haplotypes using the F1
+    # i.e. switch heterozygous genotypes in the parent to homozygous depending on the genotypes
+    # of the F1
+    parents_f1_4 <- cbind(parents_f1_3, STEVENS_HOM = as.character(NA), "NJ96-20_HOM" = as.character(NA))
+    parents_f1_4[parents_f1_4[,"STEVENS"] == "0/0", "STEVENS_HOM"] <- "0/0"
+    parents_f1_4[parents_f1_4[,"NJ96-20"] == "1/1", "NJ96-20_HOM"] <- "1/1"
+    parents_f1_4[parents_f1_4[,"STEVENS"] == "1/1", "STEVENS_HOM"] <- "1/1"
+    parents_f1_4[parents_f1_4[,"NJ96-20"] == "0/0", "NJ96-20_HOM"] <- "0/0"
+
+    parents_f1_4[parents_f1_4[,"STEVENS"] == "0/1" & parents_f1_4[,"NJ96-20"] == "1/1", "STEVENS_HOM"] <- "0/0"
+    parents_f1_4[parents_f1_4[,"STEVENS"] == "0/1" & parents_f1_4[,"NJ96-20"] == "0/0", "STEVENS_HOM"] <- "1/1"
+
+    parents_f1_4[parents_f1_4[,"STEVENS"] == "1/1" & parents_f1_4[,"NJ96-20"] == "0/1", "NJ96-20_HOM"] <- "0/0"
+    parents_f1_4[parents_f1_4[,"STEVENS"] == "0/0" & parents_f1_4[,"NJ96-20"] == "0/1", "NJ96-20_HOM"] <- "1/1"
+
+    # Remove any markers that are not STEVENS == 0/0 and OXY == 1/1
+    idx <- union(which(parents_f1_4[,"STEVENS_HOM"] == "0/0" & parents_f1_4[,"NJ96-20_HOM"] == "1/1"),
+                 which(parents_f1_4[,"STEVENS_HOM"] == "1/1" & parents_f1_4[,"NJ96-20_HOM"] == "0/0"))
+    parents_f1_5 <- parents_f1_4[idx, ]
+    # Reorder
+    parents_f1_5 <- parents_f1_5[order(row.names(parents_f1_5)), ]
+    dim(parents_f1_5)
+
+    # Create a data.frame for import to mappoly
+    progeny_gt <- family_gt[row.names(parents_f1_5), setdiff(colnames(family_gt), colnames(parents_f1_5))]
+    family_gt1 <- cbind(progeny_gt, parents_f1_5)
+    # Remove STEVENS and NJ96-20
+    family_gt2 <- family_gt1[, setdiff(colnames(family_gt1), c("STEVENS", "NJ96-20"))]
+
+    # Unique marker names
+    mars <- row.names(family_gt2)
+    # Ordered GT
+    family_gt2 <- family_gt2[mars, ]
+    family_fix2 <- vcf_in_family@fix[match(x = mars, table = vcf_in_family@fix[,"ID"]), ]
+
+    vcf_in_family1 <- vcf_in_family
+    vcf_in_family1@gt <- cbind(FORMAT = "GT", family_gt2)
+    vcf_in_family1@fix <- family_fix2
+
+    # # Convert to a geno DF for mappoly
+    # ds <- GT2DS(GT = family_gt2, n.core = 12)
+    # geno_df <- data.frame(marker = row.names(ds), parent1 = ds[,f1], parent2 = ds[, f1],
+    #                       chrom = family_fix2[,"CHROM"], position = as.numeric(family_fix2[,"POS"]), row.names = NULL)
+    # geno_df <- cbind(geno_df, ds[, colnames(progeny_gt)])
+    # write_csv(x = geno_df, file = "data/tmp.csv")
+    #
+    #
+    # dat <- mappoly::read_geno_csv(file.in = "data/tmp.csv", ploidy = 2)
+    # print(dat, detailed = TRUE)
+    #
+    # dat1 <- filter_missing(input.data = dat, type = "marker", filter.thres = 0.05, inter = TRUE)
+    #
+    # dat1 <- filter_missing(input.data = dat1, type = "individual", filter.thres = 0.05, inter = TRUE)
+    #
+    # pval.bonf <- 0.05/dat1$n.mrk
+    # mrks.chi.filt <- filter_segregation(dat1, chisq.pval.thres =  pval.bonf, inter = TRUE)
+    # seq.init <- make_seq_mappoly(mrks.chi.filt)
+    #
+    # all.rf.pairwise <- est_pairwise_rf2(input.seq = seq.init, ncpus = 12)
+    #
+
+    onemap_in <- onemap_read_vcfR(vcfR.object = vcf_in_family1, cross = "f2 intercross",
+                                  parent1 = "STEVENS_HOM", parent2 = "NJ96-20_HOM", f1 = f1, verbose = TRUE)
+
+    # Output files for r/qtl
+    geno_mat <- onemap_in$geno
+    geno_mat[geno_mat == 0] <- NA
+
+    # # Get frequencies of B allele
+    # geno_mat_b_freq <- colMeans(geno_mat - 1, na.rm = TRUE) / 2
+    # plot(geno_mat_b_freq)
+
+    geno_mat[geno_mat == 1] <- "A"
+    geno_mat[geno_mat == 2] <- "H"
+    geno_mat[geno_mat == 3] <- "B"
+
+    qtl_geno <- as.data.frame(geno_mat)
+    qtl_geno <- rbind(as.integer(sub(pattern = "chr", replacement = "", x = onemap_in$CHROM)), onemap_in$POS / 1e6, qtl_geno)
+    qtl_geno <- cbind(id = row.names(qtl_geno), qtl_geno)
+    qtl_geno$id[1:2] <- ""
+    # Save
+    write.csv(x = qtl_geno, file = paste0("data/mxo_rqtl_geno_F1-", f1, "_", reference_genome, ".csv"), quote = FALSE, row.names = FALSE)
+
+    qtl_pheno <- data.frame(id = row.names(geno_mat), fake = rnorm(length(row.names(geno_mat))))
+    write.csv(x = qtl_pheno, file = paste0("data/mxo_rqtl_pheno_F1-", f1, "_", reference_genome, ".csv"), quote = FALSE, row.names = FALSE)
+
   }
-
-  # Remove missing and non-hets in the f1
-  parents_f1_2 <- parents_f1_1[!is.na(parents_f1_1[, f1]), ]
-  parents_f1_3 <- parents_f1_2[parents_f1_2[, f1] == "0/1", ]
-  dim(parents_f1_3)
-
-  # Attempt to reconstruct the parent haplotypes using the F1
-  # i.e. switch heterozygous genotypes in the parent to homozygous depending on the genotypes
-  # of the F1
-  parents_f1_4 <- cbind(parents_f1_3, STEVENS_HOM = as.character(NA), "NJ96-20_HOM" = as.character(NA))
-  parents_f1_4[parents_f1_4[,"STEVENS"] == "0/0", "STEVENS_HOM"] <- "0/0"
-  parents_f1_4[parents_f1_4[,"NJ96-20"] == "1/1", "NJ96-20_HOM"] <- "1/1"
-  parents_f1_4[parents_f1_4[,"STEVENS"] == "1/1", "STEVENS_HOM"] <- "1/1"
-  parents_f1_4[parents_f1_4[,"NJ96-20"] == "0/0", "NJ96-20_HOM"] <- "0/0"
-
-  parents_f1_4[parents_f1_4[,"STEVENS"] == "0/1" & parents_f1_4[,"NJ96-20"] == "1/1", "STEVENS_HOM"] <- "0/0"
-  parents_f1_4[parents_f1_4[,"STEVENS"] == "0/1" & parents_f1_4[,"NJ96-20"] == "0/0", "STEVENS_HOM"] <- "1/1"
-
-  parents_f1_4[parents_f1_4[,"STEVENS"] == "1/1" & parents_f1_4[,"NJ96-20"] == "0/1", "NJ96-20_HOM"] <- "0/0"
-  parents_f1_4[parents_f1_4[,"STEVENS"] == "0/0" & parents_f1_4[,"NJ96-20"] == "0/1", "NJ96-20_HOM"] <- "1/1"
-
-  # Remove any markers that are not STEVENS == 0/0 and OXY == 1/1
-  idx <- union(which(parents_f1_4[,"STEVENS_HOM"] == "0/0" & parents_f1_4[,"NJ96-20_HOM"] == "1/1"),
-               which(parents_f1_4[,"STEVENS_HOM"] == "1/1" & parents_f1_4[,"NJ96-20_HOM"] == "0/0"))
-  parents_f1_5 <- parents_f1_4[idx, ]
-  dim(parents_f1_5)
-
-  # Replace these parent GTs in the vcf
-  family_gt1 <- cbind(family_gt[row.names(parents_f1_5), setdiff(colnames(family_gt), colnames(parents_f1_5))], parents_f1_5)
-  # Remove STEVENS and NJ96-20
-  family_gt2 <- family_gt1[, setdiff(colnames(family_gt1), c("STEVENS", "NJ96-20"))]
-  vcf_in_family1 <- vcf_in_family
-  vcf_in_family1@gt <- cbind(FORMAT = "GT", family_gt2)
-  vcf_in_family1@fix <- vcf_in_family1@fix[vcf_in_family1@fix[, "ID"] %in% row.names(family_gt2), ]
-
-  onemap_in <- onemap_read_vcfR(vcfR.object = vcf_in_family1, cross = "f2 intercross",
-                                parent1 = "STEVENS_HOM", parent2 = "NJ96-20_HOM", f1 = f1, verbose = TRUE)
-
-  # Output files for r/qtl
-  geno_mat <- onemap_in$geno
-  geno_mat[geno_mat == 0] <- NA
-  geno_mat[geno_mat == 1] <- "A"
-  geno_mat[geno_mat == 2] <- "H"
-  geno_mat[geno_mat == 3] <- "B"
-
-  qtl_geno <- as.data.frame(geno_mat)
-  qtl_geno <- rbind(as.integer(sub(pattern = "chr", replacement = "", x = onemap_in$CHROM)), onemap_in$POS / 1e6, qtl_geno)
-  qtl_geno <- cbind(id = row.names(qtl_geno), qtl_geno)
-  qtl_geno$id[1:2] <- ""
-  # Save
-  write.csv(x = qtl_geno, file = paste0("data/mxo_rqtl_geno_F1-", f1, ".csv"), quote = FALSE, row.names = FALSE)
-
-  qtl_pheno <- data.frame(id = row.names(geno_mat), fake = rnorm(length(row.names(geno_mat))))
-  write.csv(x = qtl_pheno, file = paste0("data/mxo_rqtl_pheno_F1-", f1, ".csv"), quote = FALSE, row.names = FALSE)
 
 }
 
