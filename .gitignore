@@ -10,3 +10,4 @@ variant_calling/*
 results/*
 figures/*
 data/*.RData
+data/mxo_rqtl*
