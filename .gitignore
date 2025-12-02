@@ -9,3 +9,4 @@ data_raw/*
 variant_calling/*
 results/*
 figures/*
+data/*.RData

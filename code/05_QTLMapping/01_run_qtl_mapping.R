@@ -7,7 +7,6 @@
 
 # Load packages
 library(tidyverse)
-library(qtl)
 library(qtl2)
 library(ggpubr)
 
@@ -16,46 +15,277 @@ pop_metadata <- read_csv("data/population_metadata.csv")
 # Colors
 col <- c("slateblue", "violetred", "green3")
 
-# Load data into qtl ------------------------------------------------------
 
-# Start with the larger family
-qtl_files <- list.files(path = "data", pattern = "CNJ98-325-33_BenLear", full.names = FALSE)
 
-# Read into qtl
-cross <- read.cross(format = "csvs", dir = "data", genfile = qtl_files[1], phefile = qtl_files[2], crosstype = "f2")
-cross
+# Load data ------------------------------------------------------
 
-# Count missing marker proportion
-# Remove markers with > 10% missing
-marker_missing <- nmissing(cross = cross, what = "mar") / nind(cross)
-hist(marker_missing)
-markers_missing_remove <- names(marker_missing)[marker_missing > 0.10]
+# Read in the interpolated map
+gmap_tab <- read_csv("results/mxo_rqtl_F1-CNJ98-325-33_BenLear_interpolated_map.csv")
 
-# Identify duplicate markers
-dup_markers <- findDupMarkers(cross = cross)
-dup_markers_remove <- unlist(dup_markers)
+# Load the qtl2 cross object
+data_files_load <- list.files(data_dir, pattern = "rqtl2", full.names = TRUE)
+for (file in data_files_load) {
+  load(file)
+}
 
-cross_1 <- drop.markers(cross = cross, markers = union(dup_markers_remove, markers_missing_remove))
-c(cross1 = sum(nmar(cross_1)), cross = sum(nmar(cross)))
+# Add the map to the cross object
+cross_qtl2$pmap <- sapply(cross_qtl2$gmap, function(x) x * 1e6)
+gmap <- gmap_tab %>%
+  as.data.frame() %>%
+  select(marker, chr, pos = cM) %>%
+  column_to_rownames("marker") %>%
+  qtl::table2map()
 
-# Remove high missing individuals
-ind_missing <- nmissing(cross = cross, what = "ind") / sum(nmar(cross))
-hist(ind_missing)
-ind_missing_remove <- which(ind_missing > 0.10)
-cross_1 <- cross_1[,-ind_missing_remove]
+cross_qtl2$gmap <- gmap
 
+
+# Load phenotypes
+pheno <- read_csv(file = list.files(path = "data_raw/", pattern = "pheno.csv", full.names = TRUE))
+
+# Add the phenotypes to the cross object
+pheno_add <- cross_qtl2$pheno %>%
+  as.data.frame() %>%
+  rownames_to_column("id") %>%
+  select(-fake) %>%
+  left_join(., pheno) %>%
+  column_to_rownames("id") %>%
+  as.matrix()
+
+# Recalculate flowering interval
+pheno_add[,"FlwInterval"] <- pheno_add[,"DaysToSecFlw"] - pheno_add[,"DaysToFlw"]
+
+# Add reflowering as a binary trait
+pheno_add <- cbind(pheno_add, ReflowerBinary = as.numeric(!is.na(pheno_add[,"FlwInterval"])))
+# Add NA if first flower is NA
+pheno_add[is.na(pheno_add[,"DaysToFlw"]), "ReflowerBinary"] <- NA
+
+cross_qtl2_map <- cross_qtl2
+cross_qtl2_map$pheno <- pheno_add
+# Remove covariate
+cross_qtl2_map$covar <- NULL
+
+cross_qtl2_map
+
+
+##
+
+# Run mapping -------------------------------------------------------------
+
+# Trait names
+traits <- pheno_names(cross_qtl2_map)
+# Binary traits
+binary_traits <- "ReflowerBinary"
+ols_traits <- setdiff(traits, binary_traits)
 
 # Get the map
-cross_map_df <- map2table(pull.map(cross_1)) %>%
-  rownames_to_column("marker") %>%
-  mutate(chrom = paste0("chr", str_pad(chr, 2, "left", "0")))
+gmap <- insert_pseudomarkers(map = cross_qtl2_map$gmap)
+pmap <- cross_qtl2_map$pmap
 
-# Convert to qtl2
-cross2 <- convert2cross2(cross = cross_1)
-# Extract the map
-cross_map <- pull.map(cross = cross_1)
 # Calculate genotype probabilities
-cross2_genoprob <- calc_genoprob(cross = cross2, map = cross_map)
+genoprob <- calc_genoprob(cross = cross_qtl2_map, map = gmap, error_prob = 0.06)
+
+# Calculate kinship
+kin <- calc_kinship(probs = genoprob, type = "loco")
+
+# Phenotypes for OLS
+phenos_ols <- cross_qtl2_map$pheno
+# Run genomewide scan using the mixed model
+lmm_scan_out_ols <- scan1(genoprobs = genoprob, pheno = phenos_ols, kinship = kin, cores = 8)
+
+# # Compare with model without kinship
+# scan_out_ols <- scan1(genoprobs = genoprob, pheno = phenos_ols, cores = 8)
+# plot(lmm_scan_out_ols, map = gmap, lodcolumn = 1, col = "firebrick")
+# plot(scan_out_ols, map = gmap, lodcolumn = 1, add = TRUE, col = "slateblue")
+
+
+# # Phenotypes for binary
+# phenos_bin <- cross_qtl2_map$pheno[, binary_traits, drop = FALSE]
+# # Run genomewide scan using the mixed model
+# lmm_scan_out_bin <- scan1(genoprobs = genoprob, pheno = phenos_bin, cores = 8, model = "binary")
+#
+# # Compare results for this trait using the normal model versus binary
+# ## Pretty much the same answer - just use the LMM model
+# plot(lmm_scan_out_ols, map = gmap, lodcolumn = binary_traits, col = "firebrick")
+# plot(lmm_scan_out_bin, map = gmap, lodcolumn = binary_traits, add = TRUE, col = "slateblue")
+#
+# # Merge
+# scan1_ans <- cbind(lmm_scan_out_ols, lmm_scan_out_bin)
+
+scan1_ans <- lmm_scan_out_ols
+
+# Run a permutation test
+scan1_ans_perm <- scan1perm(genoprobs = genoprob, pheno = phenos_ols, kinship = kin, reml = TRUE, n_perm = 1000, cores = 8)
+(scan1_ans_perm_thresholds <- summary(scan1_ans_perm, alpha = c(0.01, 0.05, 0.10, 0.20)))
+
+
+# Plot
+(trait_names <- colnames(scan1_ans))
+i = 1
+trt <- trait_names[i]
+plot(scan1_ans, map = pmap, lodcolumn = i, main = trt)
+add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.05",])
+
+# Zoom in
+plot(scan1_ans, map = gmap, lodcolumn = i, main = trt, chr = 2)
+
+
+
+
+# Estimate additive and dominance effects
+# chromosome 2 reflowering
+trt <- trait_names[i]
+chr <- "2"
+eff <- scan1coef(genoprob[,chr], phenos_ols[,trt], kinship = kin[[chr]], reml = FALSE)
+plot(eff, map = gmap, columns = 1:3)
+# eff <- scan1coef(genoprob[,chr], phenos_ols[,trt], contrasts=cbind(mu=c(1,1,1), a=c(-1, 0, 1), d=c(0, 1, 0)))
+# plot(eff, map = gmap, columns = 2:3)
+last_coef <- unclass(eff)[nrow(eff),] # pull out last coefficients
+for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], names(last_coef)[i], tick=FALSE, col.axis=col[i])
+
+
+
+
+
+
+
+
+
+
+
+
+# Save
+save("lmm_scan_out", "lmm_scan_thresholds", file = "output/lmm_scan_results.RData")
+load("output/lmm_scan_results.RData")
+
+# Plot
+ymx <- maxlod(lmm_scan_out)
+i = 1
+plot(lmm_scan_out, map = cross_map, lodcolumn = i, col = "slateblue", main = colnames(lmm_scan_out)[i], ylim = c(0, ymx+1))
+
+lmm_scan_out_df <- lmm_scan_out %>%
+  as.data.frame() %>%
+  rownames_to_column("marker") %>%
+  select(marker, all_of(traits)) %>%
+  left_join(., cross_map_df) %>%
+  gather(trait, score, -marker, -chrom, -chr, -pos)
+
+g_lmm_scan <- lmm_scan_out_df %>%
+  ggplot(aes(x = pos, y = score, color = chrom)) +
+  geom_line() +
+  geom_hline(data = subset(gather(rownames_to_column(as.data.frame(lmm_scan_thresholds), "signif"), trait, thresh, -signif), trait %in% traits & signif == "0.05"),
+             aes(yintercept = thresh), lty = 2, lwd = 0.5) +
+  facet_grid(trait ~ chr, switch = "both", labeller = labeller(trait = trait_labs), scales = "free_x", space = "free_x") +
+  scale_color_manual(guide = "none", values = rep(c("slateblue", "grey50"), length.out = 12)) +
+  scale_y_continuous(name = "LOD score", breaks = pretty, limits = c(0, ymx)) +
+  scale_x_continuous(name = NULL, labels = NULL) +
+  theme_minimal() +
+  theme(strip.placement = "outside", panel.spacing.x = unit(0, "line"), panel.spacing.y = unit(1.5, "line"))
+ggsave(filename = "lmm_scan_all_traits.jpg", plot = g_lmm_scan, path = "output", width = 8, height = 5, dpi = 1000)
+
+
+# Plot just pollen viability
+g_lmm_scan <- lmm_scan_out_df %>%
+  subset(trait == "PollenViability" & chr %in% c(1, 2, 12)) %>%
+  ggplot(aes(x = pos, y = score, color = chrom)) +
+  geom_line() +
+  facet_grid(trait ~ chr, switch = "both", labeller = labeller(trait = trait_labs), scales = "free_x", space = "free_x") +
+  scale_color_manual(guide = "none", values = rep(c("slateblue", "grey50"), length.out = 12)) +
+  scale_y_continuous(name = "LOD score", breaks = pretty, limits = c(0, ymx)) +
+  scale_x_continuous(name = NULL, labels = NULL) +
+  theme_minimal() +
+  theme(strip.placement = "outside", panel.spacing.x = unit(0, "line"), panel.spacing.y = unit(1.5, "line"))
+ggsave(filename = "lmm_scan_pollen_viability_subset.jpg", plot = g_lmm_scan, path = "output", width = 4, height = 3, dpi = 1000)
+
+
+
+# Plot three traits
+for (trt in traits) {
+  i <- which(colnames(lmm_scan_out) == trt)
+  jpeg(filename = file.path("output", paste0("lmm_scan1_", trt, "_out.jpg")), height = 5, width = 8, units = "in", res = 1000)
+  plot(lmm_scan_out, map = cross_map, lodcolumn = i, col = "slateblue", main = colnames(lmm_scan_out)[i], ylim = c(0, ymx+1))
+  abline(h = lmm_scan_thresholds["0.05",trt], lty = 2)
+  dev.off()
+}
+
+
+# Plot pollen viability results
+plot(lmm_scan_out, map = cross_map, lodcolumn = 6, col = "slateblue", main = colnames(lmm_scan_out)[i], ylim = c(0, ymx+1), chr = c(1,2,12))
+
+
+# Get QTL
+peaks <- find_peaks(scan1_output = lmm_scan_out, map = cross_map, threshold = lmm_scan_thresholds["0.1",], drop = 1.5)
+peaks
+# bayes_interval <- bayes_int(scan1_output = lmm_scan_out, map = cross_map)
+
+# Fit QTL effects
+i = 1
+trait <- colnames(cross2$pheno)[i]
+
+genoprobs_i <- pull_genoprobpos(genoprobs = cross2_genoprob, map = cross_map, chr = peaks$chr[peaks$lodcolumn == trait], peaks$pos[peaks$lodcolumn == trait])
+qtl_fit <- fit1(genoprobs = genoprobs_i, pheno = cross2$pheno[,i], kinship = kin[["2"]], )
+
+# Colors
+col <- c("slateblue", "violetred", "green3")
+
+# Estimate QTL effects
+j = 2
+g <- maxmarg(probs = cross2_genoprob, map = cross_map, chr = peaks$chr[j], pos = peaks$pos[j])
+qtl_eff <- scan1coef(genoprobs = cross2_genoprob[,peaks$chr[j]], pheno = cross2$pheno[,peaks$lodcolumn[j]], kinship = kin[[peaks$chr[j]]],
+                     se = TRUE, reml = TRUE, zerosum = TRUE)
+plot(qtl_eff, map = cross_map, columns = 1:3, col = col)
+last_coef <- unclass(qtl_eff)[nrow(qtl_eff),]
+for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], names(last_coef)[i], tick=FALSE, col.axis = col[i])
+(qtl_eff_j <- qtl_eff[paste0("chr", peaks$chr[j], "_", peaks$pos[j]),])
+plot_pxg(geno = g, pheno = cross2$pheno[,peaks$lodcolumn[j]] - qtl_eff_j["intercept"], sort = TRUE, SEmult = 2, swap_axes = TRUE, jitter = 0.1,
+         xlab = peaks$lodcolumn[j])
+
+j = 2
+g <- maxmarg(probs = cross2_genoprob, map = cross_map, chr = peaks$chr[j], pos = peaks$pos[j])
+qtl_eff <- scan1coef(genoprobs = cross2_genoprob[,peaks$chr[j]], pheno = cross2$pheno[,peaks$lodcolumn[j]], kinship = kin[[peaks$chr[j]]],
+                     se = TRUE, reml = TRUE, zerosum = TRUE)
+plot(qtl_eff, map = cross_map, columns = 1:3, col = col)
+last_coef <- unclass(qtl_eff)[nrow(qtl_eff),]
+for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], labels = names(last_coef)[i], tick=FALSE, col.axis = col[i])
+# Plot with lod score
+plot(qtl_eff, map = cross_map, columns = 1:3, col = col, scan1_output = lmm_scan_out, legend = "topright")
+(qtl_eff_j <- qtl_eff[paste0("chr", peaks$chr[j], "_", peaks$pos[j]),])
+plot_pxg(geno = g, pheno = cross2$pheno[,peaks$lodcolumn[j]] - qtl_eff_j["intercept"], sort = TRUE, SEmult = 2, swap_axes = TRUE, jitter = 0.1,
+         xlab = peaks$lodcolumn[j])
+
+j = 6
+g <- maxmarg(probs = cross2_genoprob, map = cross_map, chr = peaks$chr[j], pos = peaks$pos[j])
+qtl_eff <- scan1coef(genoprobs = cross2_genoprob[,peaks$chr[j]], pheno = cross2$pheno[,peaks$lodcolumn[j]], kinship = kin[[peaks$chr[j]]],
+                     se = TRUE, reml = TRUE, zerosum = TRUE)
+plot(qtl_eff, map = cross_map, columns = 1:3, col = col)
+last_coef <- unclass(qtl_eff)[nrow(qtl_eff),]
+for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], labels = names(last_coef)[i], tick=FALSE, col.axis = col[i])
+# Plot with lod score
+plot(qtl_eff, map = cross_map, columns = 1:3, col = col, scan1_output = lmm_scan_out, legend = "topright")
+(qtl_eff_j <- qtl_eff[paste0("chr", peaks$chr[j], "_", peaks$pos[j]),])
+plot_pxg(geno = g, pheno = cross2$pheno[,peaks$lodcolumn[j]] - qtl_eff_j["intercept"], sort = FALSE, SEmult = 2, swap_axes = TRUE, jitter = 0.1,
+         xlab = peaks$lodcolumn[j])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Other -------------------------------------------------------------------
+
+
+
+
 
 
 # Calculate genotype frequencies
@@ -191,129 +421,4 @@ cross2$covar <- NULL
 cross2$pheno <- pheno_mat
 
 summary(cross2)
-
-
-# Map! --------------------------------------------------------------------
-
-# Calculate kinship
-kin <- calc_kinship(probs = cross2_genoprob, type = "loco")
-
-# Run genomewide scan using the mixed model
-lmm_scan_out <- scan1(genoprobs = cross2_genoprob, pheno = cross2$pheno, kinship = kin, reml = TRUE)
-# Run a permutation test
-lmm_scan_perm_out <- scan1perm(genoprobs = cross2_genoprob, pheno = cross2$pheno, kinship = kin, reml = TRUE, n_perm = 1000, cores = 8)
-(lmm_scan_thresholds <- summary(lmm_scan_perm_out, alpha = c(0.01, 0.05, 0.10, 0.20)))
-
-# Save
-save("lmm_scan_out", "lmm_scan_thresholds", file = "output/lmm_scan_results.RData")
-load("output/lmm_scan_results.RData")
-
-# Plot
-ymx <- maxlod(lmm_scan_out)
-i = 1
-plot(lmm_scan_out, map = cross_map, lodcolumn = i, col = "slateblue", main = colnames(lmm_scan_out)[i], ylim = c(0, ymx+1))
-
-lmm_scan_out_df <- lmm_scan_out %>%
-  as.data.frame() %>%
-  rownames_to_column("marker") %>%
-  select(marker, all_of(traits)) %>%
-  left_join(., cross_map_df) %>%
-  gather(trait, score, -marker, -chrom, -chr, -pos)
-
-g_lmm_scan <- lmm_scan_out_df %>%
-  ggplot(aes(x = pos, y = score, color = chrom)) +
-  geom_line() +
-  geom_hline(data = subset(gather(rownames_to_column(as.data.frame(lmm_scan_thresholds), "signif"), trait, thresh, -signif), trait %in% traits & signif == "0.05"),
-             aes(yintercept = thresh), lty = 2, lwd = 0.5) +
-  facet_grid(trait ~ chr, switch = "both", labeller = labeller(trait = trait_labs), scales = "free_x", space = "free_x") +
-  scale_color_manual(guide = "none", values = rep(c("slateblue", "grey50"), length.out = 12)) +
-  scale_y_continuous(name = "LOD score", breaks = pretty, limits = c(0, ymx)) +
-  scale_x_continuous(name = NULL, labels = NULL) +
-  theme_minimal() +
-  theme(strip.placement = "outside", panel.spacing.x = unit(0, "line"), panel.spacing.y = unit(1.5, "line"))
-ggsave(filename = "lmm_scan_all_traits.jpg", plot = g_lmm_scan, path = "output", width = 8, height = 5, dpi = 1000)
-
-
-# Plot just pollen viability
-g_lmm_scan <- lmm_scan_out_df %>%
-  subset(trait == "PollenViability" & chr %in% c(1, 2, 12)) %>%
-  ggplot(aes(x = pos, y = score, color = chrom)) +
-  geom_line() +
-  facet_grid(trait ~ chr, switch = "both", labeller = labeller(trait = trait_labs), scales = "free_x", space = "free_x") +
-  scale_color_manual(guide = "none", values = rep(c("slateblue", "grey50"), length.out = 12)) +
-  scale_y_continuous(name = "LOD score", breaks = pretty, limits = c(0, ymx)) +
-  scale_x_continuous(name = NULL, labels = NULL) +
-  theme_minimal() +
-  theme(strip.placement = "outside", panel.spacing.x = unit(0, "line"), panel.spacing.y = unit(1.5, "line"))
-ggsave(filename = "lmm_scan_pollen_viability_subset.jpg", plot = g_lmm_scan, path = "output", width = 4, height = 3, dpi = 1000)
-
-
-
-# Plot three traits
-for (trt in traits) {
-  i <- which(colnames(lmm_scan_out) == trt)
-  jpeg(filename = file.path("output", paste0("lmm_scan1_", trt, "_out.jpg")), height = 5, width = 8, units = "in", res = 1000)
-  plot(lmm_scan_out, map = cross_map, lodcolumn = i, col = "slateblue", main = colnames(lmm_scan_out)[i], ylim = c(0, ymx+1))
-  abline(h = lmm_scan_thresholds["0.05",trt], lty = 2)
-  dev.off()
-}
-
-
-# Plot pollen viability results
-plot(lmm_scan_out, map = cross_map, lodcolumn = 6, col = "slateblue", main = colnames(lmm_scan_out)[i], ylim = c(0, ymx+1), chr = c(1,2,12))
-
-
-# Get QTL
-peaks <- find_peaks(scan1_output = lmm_scan_out, map = cross_map, threshold = lmm_scan_thresholds["0.1",], drop = 1.5)
-peaks
-# bayes_interval <- bayes_int(scan1_output = lmm_scan_out, map = cross_map)
-
-# Fit QTL effects
-i = 1
-trait <- colnames(cross2$pheno)[i]
-
-genoprobs_i <- pull_genoprobpos(genoprobs = cross2_genoprob, map = cross_map, chr = peaks$chr[peaks$lodcolumn == trait], peaks$pos[peaks$lodcolumn == trait])
-qtl_fit <- fit1(genoprobs = genoprobs_i, pheno = cross2$pheno[,i], kinship = kin[["2"]], )
-
-# Colors
-col <- c("slateblue", "violetred", "green3")
-
-# Estimate QTL effects
-j = 2
-g <- maxmarg(probs = cross2_genoprob, map = cross_map, chr = peaks$chr[j], pos = peaks$pos[j])
-qtl_eff <- scan1coef(genoprobs = cross2_genoprob[,peaks$chr[j]], pheno = cross2$pheno[,peaks$lodcolumn[j]], kinship = kin[[peaks$chr[j]]],
-                     se = TRUE, reml = TRUE, zerosum = TRUE)
-plot(qtl_eff, map = cross_map, columns = 1:3, col = col)
-last_coef <- unclass(qtl_eff)[nrow(qtl_eff),]
-for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], names(last_coef)[i], tick=FALSE, col.axis = col[i])
-(qtl_eff_j <- qtl_eff[paste0("chr", peaks$chr[j], "_", peaks$pos[j]),])
-plot_pxg(geno = g, pheno = cross2$pheno[,peaks$lodcolumn[j]] - qtl_eff_j["intercept"], sort = TRUE, SEmult = 2, swap_axes = TRUE, jitter = 0.1,
-         xlab = peaks$lodcolumn[j])
-
-j = 2
-g <- maxmarg(probs = cross2_genoprob, map = cross_map, chr = peaks$chr[j], pos = peaks$pos[j])
-qtl_eff <- scan1coef(genoprobs = cross2_genoprob[,peaks$chr[j]], pheno = cross2$pheno[,peaks$lodcolumn[j]], kinship = kin[[peaks$chr[j]]],
-                     se = TRUE, reml = TRUE, zerosum = TRUE)
-plot(qtl_eff, map = cross_map, columns = 1:3, col = col)
-last_coef <- unclass(qtl_eff)[nrow(qtl_eff),]
-for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], labels = names(last_coef)[i], tick=FALSE, col.axis = col[i])
-# Plot with lod score
-plot(qtl_eff, map = cross_map, columns = 1:3, col = col, scan1_output = lmm_scan_out, legend = "topright")
-(qtl_eff_j <- qtl_eff[paste0("chr", peaks$chr[j], "_", peaks$pos[j]),])
-plot_pxg(geno = g, pheno = cross2$pheno[,peaks$lodcolumn[j]] - qtl_eff_j["intercept"], sort = TRUE, SEmult = 2, swap_axes = TRUE, jitter = 0.1,
-         xlab = peaks$lodcolumn[j])
-
-j = 6
-g <- maxmarg(probs = cross2_genoprob, map = cross_map, chr = peaks$chr[j], pos = peaks$pos[j])
-qtl_eff <- scan1coef(genoprobs = cross2_genoprob[,peaks$chr[j]], pheno = cross2$pheno[,peaks$lodcolumn[j]], kinship = kin[[peaks$chr[j]]],
-                     se = TRUE, reml = TRUE, zerosum = TRUE)
-plot(qtl_eff, map = cross_map, columns = 1:3, col = col)
-last_coef <- unclass(qtl_eff)[nrow(qtl_eff),]
-for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], labels = names(last_coef)[i], tick=FALSE, col.axis = col[i])
-# Plot with lod score
-plot(qtl_eff, map = cross_map, columns = 1:3, col = col, scan1_output = lmm_scan_out, legend = "topright")
-(qtl_eff_j <- qtl_eff[paste0("chr", peaks$chr[j], "_", peaks$pos[j]),])
-plot_pxg(geno = g, pheno = cross2$pheno[,peaks$lodcolumn[j]] - qtl_eff_j["intercept"], sort = FALSE, SEmult = 2, swap_axes = TRUE, jitter = 0.1,
-         xlab = peaks$lodcolumn[j])
-
 
