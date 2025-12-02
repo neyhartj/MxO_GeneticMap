@@ -88,7 +88,9 @@ fi
 export FASTQDIRUSE=$FASTQDIR
 
 # Use the sample file to create a vector of sample names
-SAMPLENAMES=$(cut -d , -f 8 $SAMPLEFILE)
+dos2unix "$SAMPLEFILE"
+SAMPLENAMES=($(cut -d , -f 8 "$SAMPLEFILE" | grep -v '^[[:space:]]*$' | grep -v 'RG_Sample_Code'))
+
 
 # Iterate over the sample names
 for SAMPLE in $SAMPLENAMES; do
