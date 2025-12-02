@@ -29,10 +29,11 @@ max_snp_missing <- 0.20
 
 
 # Names of the parents
-parents <- c("STEVENS", "NJ98-20")
+parents <- subset(pop_metadata, category == "parent", individual, drop = TRUE)
+parents
 # Names of the F1s
-f1s <- c("CNJ98-325-33", "CNJ98-309-19")
-
+f1s <- subset(pop_metadata, category == "S0", individual, drop = TRUE)
+f1s
 
 
 

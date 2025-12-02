@@ -48,7 +48,7 @@ INPUT=$WD/data_raw/
 FASTQDIR=$INPUT/fastq_files
 
 # Name of the file containing sample names
-SAMPLEFILE=$WD/data/mxo_rapid15k_sample_list.txt
+SAMPLEFILE=$WD/data/population_metadata.csv
 
 # Adapter sequence to remove
 # 'export' needs to be used in order to put the variable in the global environment
@@ -88,7 +88,7 @@ fi
 export FASTQDIRUSE=$FASTQDIR
 
 # Use the sample file to create a vector of sample names
-SAMPLENAMES=$(cut -d \t -f 1 $SAMPLEFILE)
+SAMPLENAMES=$(cut -d , -f 8 $SAMPLEFILE)
 
 # Iterate over the sample names
 for SAMPLE in $SAMPLENAMES; do

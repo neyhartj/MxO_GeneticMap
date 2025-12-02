@@ -47,8 +47,12 @@ INPUT=$WD/data_raw/
 # Name of input directory with FASTQ
 FASTQDIR=$INPUT/fastq_files
 
+# Directory to store cleaned FASTQ files in 90Daydata to save space on project directory
+TEMPDIR=/90daydata/gifvl_vaccinium/MxO_GeneticMap
+
+
 # Name of the file containing sample names
-SAMPLEFILE=$WD/data/mxo_rapid15k_sample_list.txt
+SAMPLEFILE=$WD/data/population_metadata.csv
 
 # Adapter sequence to remove
 # 'export' needs to be used in order to put the variable in the global environment
@@ -58,7 +62,7 @@ export ADAPTER="AGATCGGAAGAGC"
 # Directory to output QC results
 QCOUTPUT=$WD/results/variant_calling/qc/
 # Directory to output cleaned FASTQ files
-CLEANEDFASTQOUTPUT=$WD/results/variant_calling/cleaned_fastq_files/
+CLEANEDFASTQOUTPUT=$TEMPDIR/variant_calling/cleaned_fastq_files/
 
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE
@@ -88,7 +92,7 @@ fi
 export FASTQDIRUSE=$FASTQDIR
 
 # Use the sample file to create a vector of sample names
-SAMPLENAMES=($(cut -d \t -f 1 $SAMPLEFILE))
+SAMPLENAMES=$(cut -d , -f 8 $SAMPLEFILE)
 
 
 ## Step 1: Read trimming and quality control
