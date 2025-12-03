@@ -40,7 +40,7 @@ TEMPDIR=/90daydata/gifvl_vaccinium/MxO_GeneticMap
 VARDIR=$WD/results/variant_calling
 
 # Path to directory containing the FASTQ files
-FASTQDIR=$WD/results/variant_calling/cleaned_fastq_files/
+FASTQDIR=$TEMPDIR/variant_calling/cleaned_fastq_files/
 
 
 # Prefix of the indexed reference genomes

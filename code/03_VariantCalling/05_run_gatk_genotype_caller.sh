@@ -37,20 +37,20 @@ module load gatk
 
 # Working directory
 WD=/project/gifvl_vaccinium/MxO_GeneticMap
+# Path to variant calling results directory
 VARDIR=$WD/results/variant_calling
+# Directory of gatk output
+VARIANTDIR=$VARDIR/variants/gatk/
 
-# Path to directory containing the BAM files
-BAMDIR=$VARDIR/alignment/
+# Path to temporary directory on 90Daydata
+TEMPDIR=/90daydata/gifvl_vaccinium/MxO_GeneticMap
+# Path to .vcf files from haplotype caller on 90Daydata
+HAPLODIR=$TEMPDIR/variant_calling/variants/gatk/haplotype_caller
 
 # Prefix of the indexed reference genomes
 BLREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/Vaccinium_macrocarpon_BenLear_v2.fasta
 STREFPREFIX=/project/gifvl_vaccinium/vaccinium_genomes/V_macrocarpon_Stevens_v1.fasta
 OXREFPREFIX=//project/gifvl_vaccinium/MxO_GeneticMap/results/genome_scaffolding_ragtag/Voxycoccos_NJ96-20_v1_ragtag_scaffolded/Voxycoccos_NJ96-20_v1_ragtag_scaffold.fasta
-
-# Directory to output vcf files
-VARIANTDIR=$VARDIR/variants/gatk/
-HAPLODIR=$VARIANTDIR/haplotype_caller
-
 
 # Number of threads available
 NTHREADS=$SLURM_JOB_CPUS_PER_NODE

@@ -118,22 +118,25 @@ export -f run_haplotype_caller
 
 
 
-## Subset the "BenLear" alignment files
-#BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
-## Run the function in parallel
-#parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
-#
-#wait
+# Subset the "BenLear" alignment files
+BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam"))
+# BENLEARBAMFILES=($(find $BAMDIR -name "*BenLear*.bam" | grep "P013_WD12")) # Only run on subset for testing
+# Run the function in parallel
+parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $BLREFPREFIX ::: ${BENLEARBAMFILES[@]}
 
-# # Subset the "Stevens" alignment files
-# STEVENSBAMFILES=($(find $BAMDIR -name "*Stevens*.bam"))
-# # Run the function in parallel
-# parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $STREFPREFIX ::: ${STEVENSBAMFILES[@]}
-# 
-# wait
+wait
+
+# Subset the "Stevens" alignment files
+STEVENSBAMFILES=($(find $BAMDIR -name "*Stevens*.bam"))
+# STEVENSBAMFILES=($(find $BAMDIR -name "*Stevens*.bam" | grep "P013_WD12")) # Only run on subset for testing
+# Run the function in parallel
+parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $STREFPREFIX ::: ${STEVENSBAMFILES[@]}
+
+wait
 
 # Subset the "Oxycoccos" alignment files
 OXYCOCCOSBAMFILES=($(find $BAMDIR -name "*Oxycoccos*.bam"))
+# OXYCOCCOSBAMFILES=($(find $BAMDIR -name "*Oxycoccos*.bam" | grep "P013_WD12")) # Only run on subset for testing
 # Run the function in parallel
 parallel -j $NTHREADS run_haplotype_caller {} $HAPLODIR $OXREFPREFIX ::: ${OXYCOCCOSBAMFILES[@]}
 
