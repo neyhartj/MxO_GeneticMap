@@ -4,7 +4,7 @@
 # job standard output will go to the file slurm-%j.out (where %j is the job ID)
 
 #SBATCH -A gifvl_vaccinium
-#SBATCH --job-name="MxO variant calling - haplotype caller - BenLear"
+#SBATCH --job-name="MxO variant calling - haplotype caller"
 #SBATCH -p short
 #SBATCH -t 24:00:00   # walltime limit (HH:MM:SS)
 #SBATCH -N 1   # number of nodes
@@ -105,7 +105,7 @@ run_haplotype_caller() {
   outfile=$output/$newfile
 
   # Run haplotype caller
-  gatk --java-options "-Xmx8g" HaplotypeCaller -R $ref -I $file -O $outfile -ERC GVCF
+  gatk --java-options "-Xmx12g" HaplotypeCaller -R $ref -I $file -O $outfile -ERC GVCF
   # Index the feature file
   gatk IndexFeatureFile -I $outfile
 
