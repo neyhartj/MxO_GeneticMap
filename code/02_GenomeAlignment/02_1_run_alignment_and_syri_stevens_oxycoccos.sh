@@ -76,8 +76,10 @@ mkdir -p $NEWGENOMEDIR
 # Name of the modified ben lear fasta
 # Simply add _renamed to the file name; use the filename variable above to create the new file name
 newbenlear=${NEWGENOMEDIR}/$(basename ${BEN_LEAR_REF%".fasta"} )_renamed.fasta
-# Use bioawk to only keep chromosomes that start with "chr" and take the reverse complement of chromosomes 1, 4, 5, 6, and 9
-bioawk -c fastx '$name ~ /^chr/ { if ($name=="chr01" || $name=="chr04" || $name=="chr05") { print ">"$name"\n"revcomp($seq) } else { print ">"$name"\n"$seq } }' $BEN_LEAR_REF > $newbenlear
+# # Use bioawk to only keep chromosomes that start with "chr" and take the reverse complement of chromosomes 1, 4, 5, 6, and 9
+# bioawk -c fastx '$name ~ /^chr/ { if ($name=="chr01" || $name=="chr04" || $name=="chr05") { print ">"$name"\n"revcomp($seq) } else { print ">"$name"\n"$seq } }' $BEN_LEAR_REF > $newbenlear
+# The ben lear chromosomes are named "Vmac_chr[##]", so just remove Vmac_ prefix
+bioawk -c fastx '$name ~ /^Vmac_chr/ { sub(/^Vmac_/, "", $name); printf ">%s\n%s\n", $name, $seq }' $BEN_LEAR_REF > $newbenlear
 
 # Name of the modified stevens fasta
 newstevens=${NEWGENOMEDIR}/$(basename ${STEVENS_REF%".fasta"} )_renamed.fasta
@@ -91,123 +93,154 @@ bioawk -c fastx '$name ~ /^chr/ { sub(/_.*/, "", $name); printf ">chr%02d\n%s\n"
 
 # Use bioawk to print the names and lengths of the chromosomes in each modified fasta file
 echo -e "\nChromosome lengths in the modified Ben Lear reference fasta:"
-bioawk -c fastx '$name ~ /^chr/ { print $name "\t" length($seq) }' $newbenlear
+bioawk -c fastx '{ print $name "\t" length($seq) }' $newbenlear
 echo -e "\nChromosome lengths in the modified Stevens reference fasta:"
-bioawk -c fastx '$name ~ /^chr/ { print $name "\t" length($seq) }' $newstevens
+bioawk -c fastx '{ print $name "\t" length($seq) }' $newstevens
 echo -e "\nChromosome lengths in the modified Oxycoccos query fasta:"
-bioawk -c fastx '$name ~ /^chr/ { print $name "\t" length($seq) }' $oxyassembly
+bioawk -c fastx '{ print $name "\t" length($seq) }' $oxyassembly
 echo -e "\n"
+
+
+## Run nucmer to align the genomes
 
 # Define a subdir for nucmer results
 NUCMER_OUT=$OUTDIR/nucmer
 mkdir -p $NUCMER_OUT
 
-# Align Oxy to Stevens with nucmer
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/stevens_oxy_nucmer $newstevens $oxyassembly
-# Align Stevens to Oxy with nucmer (reverse direction)
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/oxy_stevens_nucmer $oxyassembly $newstevens
+# Define a list of genome pairs to align; iterate over this list
+# The list should include the following:
+# 1) Stevens vs Oxycoccos
+# 2) Oxycoccos vs Stevens
+# 3) Stevens vs Ben Lear
+# 4) Ben Lear vs Stevens
+# 5) Oxycoccos vs Ben Lear
+# 6) Ben Lear vs Oxycoccos
+ref_genome_list=("$newstevens" "$oxyassembly" "$newstevens" "$newbenlear" "$oxyassembly" "$newbenlear")
+query_genome_list=("$oxyassembly" "$newstevens" "$newbenlear" "$newstevens" "$newbenlear" "$oxyassembly")
+output_prefix_list=("stevens_oxy_nucmer" "oxy_stevens_nucmer" "stevens_benlear_nucmer" "benlear_stevens_nucmer" "oxy_benlear_nucmer" "benlear_oxy_nucmer")
 
-# Align Stevens to Ben Lear with nucmer
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/stevens_benlear_nucmer $newstevens $newbenlear
-# Align Ben Lear to Stevens with nucmer (reverse direction)
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/benlear_stevens_nucmer $newbenlear $newstevens	
+# Iterate over the genome pairs and run nucmer
+for i in ${!ref_genome_list[@]}; do
+	ref_genome=${ref_genome_list[$i]}
+	query_genome=${query_genome_list[$i]}
+	output_prefix=${output_prefix_list[$i]}
 
-# Align Oxy to Ben Lear with nucmer
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/oxy_benlear_nucmer $oxyassembly $newbenlear
-# Align Ben Lear to Oxy with nucmer (reverse direction)
-nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/benlear_oxy_nucmer $newbenlear $oxyassembly
+	# Run nucmer
+	nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/$output_prefix $ref_genome $query_genome
 
-# Find all delta files
+done
+
+# Filter the nucmer alignments and create coords files
+# Filter for 1-1 alignments at least 10000 bp long
 delta_files=($NUCMER_OUT/*.delta)
+# Do not include "filter" delta files from previous runs
+delta_files=(${delta_files[@]:0})
+delta_files=(${delta_files[@]//*_filter.delta*})
 # Iterate over delta files and filter them
 for delta_file in "${delta_files[@]}"; do
 	echo "Processing $delta_file"
 	# Get the prefix (file name without path and extension)
 	prefix=$(basename "$delta_file" .delta)
-	# Filter for 1-1 alignments at least 1000 bp long
-	delta-filter -1 -l 1000 "$delta_file" > "${NUCMER_OUT}/${prefix}_i90_l100.delta"
+	# Filter for 1-1 alignments at least 10000 bp long
+	delta-filter -1 -l 10000 "$delta_file" > "${NUCMER_OUT}/${prefix}_filter.delta"
 
 	# Create a tab-delimited coords file
-	show-coords -THrd "${NUCMER_OUT}/${prefix}_i90_l100.delta" > "${NUCMER_OUT}/${prefix}_i90_l100.coords"	
+	show-coords -THrd "${NUCMER_OUT}/${prefix}_filter.delta" > "${NUCMER_OUT}/${prefix}_filter.coords"	
 done
 
-# Run SYRI
+# Run SYRI for the nucmer alignments
 # Define a subdir for syri results
 SYRI_OUT=results/$SUBDIR/syri
 mkdir -p $SYRI_OUT
 
-# Run SYRI for the Stevens vs Oxycoccos alignment
-SYRI_PREFIX=stevens_oxy_
-NUCMER_PREFIX=$NUCMER_OUT/stevens_oxy_nucmer
-syri -r $newstevens -q $oxyassembly -c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
-	--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX
+# Iterate over the genome pairs again to run SYRI
+# The list should include the following:
+# 1) Stevens vs Oxycoccos
+# 2) Oxycoccos vs Stevens
+# 3) Stevens vs Ben Lear
+# 4) Ben Lear vs Stevens
+# 5) Oxycoccos vs Ben Lear
+# 6) Ben Lear vs Oxycoccos
 
-# Plot with plotsr
-GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
-echo -e "#file\tname\ttags\n${newstevens}\tstevens\n${oxyassembly}\toxycoccos" > $GENOME_FILE
-SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
-plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+# Use the reference and query genome lists defined above
+for i in ${!ref_genome_list[@]}; do
+	ref_genome=${ref_genome_list[$i]}
+	query_genome=${query_genome_list[$i]}
+	output_prefix=${output_prefix_list[$i]}
+
+	# Get the filtered delta and coords file names
+	NUCMER_PREFIX=$NUCMER_OUT/$output_prefix
+	# Define SYRI prefix
+	SYRI_PREFIX=${output_prefix}_
+
+	# Delta file
+	DELTA_FILE=${NUCMER_PREFIX}_filter.delta
+	# Coords file
+	COORDS_FILE=${NUCMER_PREFIX}_filter.coords
+
+	# Run SYRI
+	syri -r $ref_genome -q $query_genome -c $COORDS_FILE -d $DELTA_FILE \
+		--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX
+
+	# Plot with plotsr
+	GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
+	# Get the base names of the reference and query genomes
+	ref_name=$(basename $ref_genome)
+	query_name=$(basename $query_genome)
+	echo -e "#file\tname\ttags\n${ref_genome}\t${ref_name}\n${query_genome}\t${query_name}" > $GENOME_FILE
+	SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
+	plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+
+done
 
 
-# Run SYRI for the Oxycoccos vs Stevens alignment
-SYRI_PREFIX=oxy_stevens_
-NUCMER_PREFIX=$NUCMER_OUT/oxy_stevens_nucmer
-syri -r $oxyassembly -q $newstevens -c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
-	--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX	
 
-# Plot with plotsr
-GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
-echo -e "#file\tname\ttags\n${oxyassembly}\toxycoccos\n${newstevens}\tstevens" > $GENOME_FILE
-SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
-plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
 
-# Run SYRI for the Stevens vs Ben Lear alignment
-SYRI_PREFIX=stevens_benlear_
-NUCMER_PREFIX=$NUCMER_OUT/stevens_benlear_nucmer
-syri -r $newstevens -q $newbenlear -c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
-	--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX
+## Use minimap2 to for whole genome alignment (for comparison)
+MINIMAP_OUT=$OUTDIR/minimap2
+mkdir -p $MINIMAP_OUT
 
-# Plot with plotsr
-GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
-echo -e "#file\tname\ttags\n${newstevens}\tstevens\n${newbenlear}\tbenlear" > $GENOME_FILE
-SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
-plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+# Iterate over the genome pairs and run minimap2; use the list defined above
+# create new output prefixes for minimap2
+output_prefix_list=("stevens_oxy_minimap2" "oxy_stevens_minimap2" "stevens_benlear_minimap2" "benlear_stevens_minimap2" "oxy_benlear_minimap2" "benlear_oxy_minimap2")
 
-# Run SYRI for the Ben Lear vs Stevens alignment
-SYRI_PREFIX=benlear_stevens_
-NUCMER_PREFIX=$NUCMER_OUT/benlear_stevens_nucmer
-syri -r $newbenlear -q $newstevens -c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
-	--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX
+# Iterate over the genome pairs again to run minimap2
+for i in ${!ref_genome_list[@]}; do
+	ref_genome=${ref_genome_list[$i]}
+	query_genome=${query_genome_list[$i]}
+	output_prefix=${output_prefix_list[$i]}
 
-# Plot with plotsr
-GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
-echo -e "#file\tname\ttags\n${newbenlear}\tbenlear\n${newstevens}\tstevens" > $GENOME_FILE
-SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
-plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+	# Align with minimap2
+	minimap2 -ax asm5 -eqx -t $NTHREADS $ref_genome $query_genome | samtools sort -o $MINIMAP_OUT/${output_prefix}.bam
+	samtools index $MINIMAP_OUT/${output_prefix}.bam
 
-# Run SYRI for the Oxycoccos vs Ben Lear alignment
-SYRI_PREFIX=oxy_benlear_
-NUCMER_PREFIX=$NUCMER_OUT/oxy_benlear_nucmer
-syri -r $oxyassembly -q $newbenlear -c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
-	--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX	
+done
 
-# Plot with plotsr
-GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
-echo -e "#file\tname\ttags\n${oxyassembly}\toxycoccos\n${newbenlear}\tbenlear" > $GENOME_FILE
-SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
-plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+# Run SYRI on the minimap2 alignments
+for i in ${!ref_genome_list[@]}; do
+	ref_genome=${ref_genome_list[$i]}
+	query_genome=${query_genome_list[$i]}
+	output_prefix=${output_prefix_list[$i]}
 
-# Run SYRI for the Ben Lear vs Oxycoccos alignment
-SYRI_PREFIX=benlear_oxy_
-NUCMER_PREFIX=$NUCMER_OUT/benlear_oxy_nucmer
-syri -r $newbenlear -q $oxyassembly -c ${NUCMER_PREFIX}_i90_l100.coords -d ${NUCMER_PREFIX}_i90_l100.delta \
-	--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX	
+	# BAM file from minimap2
+	BAM_FILE=$MINIMAP_OUT/${output_prefix}.bam
+	# Define SYRI prefix
+	SYRI_PREFIX=${output_prefix}_
 
-# Plot with plotsr
-GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
-echo -e "#file\tname\ttags\n${newbenlear}\tbenlear\n${oxyassembly}\toxycoccos" > $GENOME_FILE
-SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
-plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+	# Run SYRI
+	syri -r $ref_genome -q $query_genome -c $BAM_FILE \
+		--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX
+
+	# Plot with plotsr
+	GENOME_FILE=${SYRI_OUT}/${SYRI_PREFIX}genomes.txt
+	# Get the base names of the reference and query genomes
+	ref_name=$(basename $ref_genome)
+	query_name=$(basename $query_genome)
+	echo -e "#file\tname\ttags\n${ref_genome}\t${ref_name}\n${query_genome}\t${query_name}" > $GENOME_FILE
+	SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
+	plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+
+done
 
 
 # End of script
