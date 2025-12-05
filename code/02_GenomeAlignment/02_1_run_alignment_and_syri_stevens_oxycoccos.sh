@@ -33,7 +33,7 @@ SUBDIR=genome_alignment
 GENOME_DIR=/project/gifvl_vaccinium/vaccinium_genomes/
 
 # Path to the Ben Lear reference fasta file.
-BEN_LEAR_REF=${GENOME_DIR}/Vaccinium_macrocarpon_BenLear_v2.fasta
+BEN_LEAR_REF=${GENOME_DIR}/Vmacrocarpon_BenLear_v1-scaffolds.fasta
 
 # Path to the Stevens fasta file
 STEVENS_REF=${GENOME_DIR}/V_macrocarpon_Stevens_v1.fasta
@@ -74,12 +74,13 @@ NEWGENOMEDIR=$RESULTS/modified_genomes
 mkdir -p $NEWGENOMEDIR
 
 # Name of the modified ben lear fasta
-newbenlear=${NEWGENOMEDIR}/Vaccinium_macrocarpon_BenLear_v2_renamed.fasta
+# Simply add _renamed to the file name; use the filename variable above to create the new file name
+newbenlear=${NEWGENOMEDIR}/$(basename ${BEN_LEAR_REF%".fasta"} )_renamed.fasta
 # Use bioawk to only keep chromosomes that start with "chr" and take the reverse complement of chromosomes 1, 4, 5, 6, and 9
 bioawk -c fastx '$name ~ /^chr/ { if ($name=="chr01" || $name=="chr04" || $name=="chr05") { print ">"$name"\n"revcomp($seq) } else { print ">"$name"\n"$seq } }' $BEN_LEAR_REF > $newbenlear
 
 # Name of the modified stevens fasta
-newstevens=${NEWGENOMEDIR}/V_macrocarpon_Stevens_v1_renamed.fasta
+newstevens=${NEWGENOMEDIR}/$(basename ${STEVENS_REF%".fasta"} )_renamed.fasta
 # Use bioawk to only keep the chromosomes that start with "chr", remove the suffix '_Vaccinium_macrocarpon_Stevens_v1', and rename them to "chr[##]"
 # Do no modify the orientation of any chromosomes in Stevens
 bioawk -c fastx '$name ~ /^chr/ { sub(/_.*/, "", $name); printf ">chr%02d\n%s\n", substr($name, 4), $seq }' $STEVENS_REF > $newstevens
