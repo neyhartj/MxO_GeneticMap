@@ -45,7 +45,7 @@ GENOTYPEDIR=$VARIANTDIR/genotype_caller
 MAXMISSING=0.20 # Maximum missing data proportion
 MINDP=10 # Minimum read depth
 MINMAC=1 # Remove monomorphic SNPs
-MINQ=10 # Minimum QUAL score
+MINQ=40 # Minimum QUAL score
 
 
 ##############################
