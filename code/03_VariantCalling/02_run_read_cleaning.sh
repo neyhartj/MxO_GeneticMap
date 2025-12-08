@@ -95,7 +95,7 @@ export FASTQDIRUSE=$FASTQDIR
 # Some samples are blank; remove them using 'grep -v' to exclude blank lines
 # The file also has a header row; remove that as well
 dos2unix "$SAMPLEFILE"
-SAMPLENAMES=($(cut -d , -f 8 "$SAMPLEFILE" | grep -v '^[[:space:]]*$' | grep -v 'RG_Sample_Code'))
+SAMPLENAMES=($(cut -d , -f 9 "$SAMPLEFILE" | grep -v '^[[:space:]]*$' | grep -v 'RG_Sample_Code'))
 
 ## Step 1: Read trimming and quality control
 
