@@ -4,7 +4,7 @@
 # job standard output will go to the file slurm-%j.out (where %j is the job ID)
 
 #SBATCH -A gifvl_vaccinium
-#SBATCH --time=04:00:00  # walltime limit (HH:MM:SS)
+#SBATCH --time=08:00:00  # walltime limit (HH:MM:SS)
 #SBATCH --nodes=1   # number of nodes
 #SBATCH --ntasks-per-node=12   # X processor core(s) per node X 2 threads per core
 #SBATCH --mem=48G   # maximum memory per node
@@ -128,7 +128,7 @@ for i in ${!ref_genome_list[@]}; do
 	output_prefix=${output_prefix_list[$i]}
 
 	# Run nucmer
-	nucmer --maxmatch --noextend -c 500 -b 500 -l 100 -p $NUCMER_OUT/$output_prefix $ref_genome $query_genome
+	nucmer --maxmatch --noextend -c 500 -l 100 -p $NUCMER_OUT/$output_prefix $ref_genome $query_genome
 
 done
 
@@ -171,7 +171,7 @@ for i in ${!ref_genome_list[@]}; do
 	output_prefix=${output_prefix_list[$i]}
 
 	# Print message
-	printf "\n\nRunning SYRI for %s vs %s\n" "$(basename $ref_genome)" "$(basename $query_genome)"
+	printf "\n\nRunning SYRI for nucmer output of %s vs %s\n" "$(basename $ref_genome)" "$(basename $query_genome)"
 
 
 	# Get the filtered delta and coords file names
@@ -217,7 +217,8 @@ for i in ${!ref_genome_list[@]}; do
 	output_prefix=${output_prefix_list[$i]}
 
 	# Align with minimap2
-	minimap2 -ax asm5 -eqx -t $NTHREADS $ref_genome $query_genome | samtools sort -o $MINIMAP_OUT/${output_prefix}.bam
+	# Make sure CIGAR strings are accurate with -eqx
+	minimap2 -ax asm5 --eqx -t $NTHREADS $ref_genome $query_genome | samtools sort -@ $NTHREADS -o $MINIMAP_OUT/${output_prefix}.bam
 	samtools index $MINIMAP_OUT/${output_prefix}.bam
 
 done
@@ -233,8 +234,11 @@ for i in ${!ref_genome_list[@]}; do
 	# Define SYRI prefix
 	SYRI_PREFIX=${output_prefix}_
 
+	printf "\n\nRunning SYRI for minimap2 output of %s vs %s\n" "$(basename $ref_genome)" "$(basename $query_genome)"
+
+
 	# Run SYRI
-	syri -r $ref_genome -q $query_genome -c $BAM_FILE \
+	syri -r $ref_genome -q $query_genome -c $BAM_FILE -F B \
 		--lf ${SYRI_PREFIX}.log --log DEBUG -k --nc $NTHREADS --dir $SYRI_OUT --prefix $SYRI_PREFIX
 
 	# Plot with plotsr
