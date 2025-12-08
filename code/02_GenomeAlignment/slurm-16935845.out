@@ -1,0 +1,108 @@
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+/usr/local/sbin/log-module.py:43: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  my_logger.warn("ModuleLoggingWARN Unexpected arguments to log-module.py: " + str(leftovers))
+
+Chromosome lengths in the modified Ben Lear reference fasta:
+chr01	49754772
+chr06	39611093
+chr11	44304048
+chr02	39953221
+chr07	36971948
+chr12	39768846
+chr04	36600693
+chr09	41709215
+chr03	38990125
+chr08	38270687
+chr05	36633343
+chr10	36698714
+
+Chromosome lengths in the modified Stevens reference fasta:
+chr01	48813634
+chr02	37842272
+chr03	38370009
+chr04	34520311
+chr05	32391159
+chr06	38094011
+chr07	37005335
+chr08	35136894
+chr09	39445498
+chr10	33315791
+chr11	41728424
+chr12	38444359
+
+Chromosome lengths in the modified Oxycoccos query fasta:
+chr10	34623960
+chr11	42011477
+chr12	41334324
+chr01	47536619
+chr02	39402607
+chr03	34826091
+chr04	34861715
+chr05	34439967
+chr06	37074749
+chr07	37062435
+chr08	35880324
+chr09	40269075
+
+
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_oxy_nucmer.ntref" of length 455107709
+# construct suffix tree for sequence of length 455107709
+# (maximum reference length is 2305843009213693948)
+# (maximum query length is 18446744073709551615)
+# process 4551077 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_oxy_nucmer.ntref 207.53
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/Voxycoccos_NJ96-20_v1_ragtag_scaffolded_renamed.fasta" of length 459323354
+# matching query-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/Voxycoccos_NJ96-20_v1_ragtag_scaffolded_renamed.fasta"
+# against subject-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_oxy_nucmer.ntref"
+# COMPLETETIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_oxy_nucmer.ntref 634.10
+# SPACE /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_oxy_nucmer.ntref 879.30
+4: FINISHING DATA
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/oxy_stevens_nucmer.ntref" of length 459323355
+# construct suffix tree for sequence of length 459323355
+# (maximum reference length is 2305843009213693948)
+# (maximum query length is 18446744073709551615)
+# process 4593233 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/oxy_stevens_nucmer.ntref 216.18
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/V_macrocarpon_Stevens_v1_renamed.fasta" of length 455107708
+# matching query-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/V_macrocarpon_Stevens_v1_renamed.fasta"
+# against subject-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/oxy_stevens_nucmer.ntref"
+# COMPLETETIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/oxy_stevens_nucmer.ntref 643.86
+# SPACE /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/oxy_stevens_nucmer.ntref 879.37
+4: FINISHING DATA
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_benlear_nucmer.ntref" of length 455107709
+# construct suffix tree for sequence of length 455107709
+# (maximum reference length is 2305843009213693948)
+# (maximum query length is 18446744073709551615)
+# process 4551077 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_benlear_nucmer.ntref 215.29
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/Vmacrocarpon_BenLear_v1-scaffolds_renamed.fasta" of length 479266716
+# matching query-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/Vmacrocarpon_BenLear_v1-scaffolds_renamed.fasta"
+# against subject-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_benlear_nucmer.ntref"
+# COMPLETETIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_benlear_nucmer.ntref 659.27
+# SPACE /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/stevens_benlear_nucmer.ntref 898.32
+4: FINISHING DATA
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/benlear_stevens_nucmer.ntref" of length 479266717
+# construct suffix tree for sequence of length 479266717
+# (maximum reference length is 2305843009213693948)
+# (maximum query length is 18446744073709551615)
+# process 4792667 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/benlear_stevens_nucmer.ntref 229.64
+# reading input file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/V_macrocarpon_Stevens_v1_renamed.fasta" of length 455107708
+# matching query-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/modified_genomes/V_macrocarpon_Stevens_v1_renamed.fasta"
+# against subject-file "/project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/benlear_stevens_nucmer.ntref"
+# COMPLETETIME /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/benlear_stevens_nucmer.ntref 643.48
+# SPACE /home/jeffrey.neyhart/.conda/envs/wgs_env/opt/mummer-3.23/mummer /project/gifvl_vaccinium/MxO_GeneticMap/results/genome_alignment/nucmer/benlear_stevens_nucmer.ntref 898.71
+4: FINISHING DATA

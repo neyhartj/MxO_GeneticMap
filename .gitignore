@@ -3,10 +3,11 @@
 .RData
 .Ruserdata
 *.DS_Store
+analysis/*
 code/mxo_final/*
 code/old/*
 data_raw/*
-variant_calling/*
+old_variant_calling_results/*
 results/*
 figures/*
 data/*.RData

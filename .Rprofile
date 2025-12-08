@@ -1,4 +1,4 @@
-library(tidyverse)
+# library(tidyverse)
 proj_dir <- getwd()
 data_dir <- file.path(proj_dir, 'data')
 results_dir <- file.path(proj_dir, 'results')
