@@ -9,6 +9,7 @@
 library(tidyverse)
 library(qtl2)
 library(ggpubr)
+library(rrBLUP)
 
 pop_metadata <- read_csv("data/population_metadata.csv")
 
@@ -40,24 +41,19 @@ cross_qtl2$gmap <- gmap
 
 
 # Load phenotypes
-pheno <- read_csv(file = list.files(path = "data_raw/", pattern = "pheno.csv", full.names = TRUE))
+# Output data to CSVs
+pheno_blues <- read_csv(file = file.path(data_dir, "mxo_all_family_pheno_blues.csv"))
+pheno_cat <- read_csv(file = file.path(data_dir, "mxo_all_family_pheno_categorical.csv"))
 
 # Add the phenotypes to the cross object
 pheno_add <- cross_qtl2$pheno %>%
   as.data.frame() %>%
   rownames_to_column("id") %>%
   select(-fake) %>%
-  left_join(., pheno) %>%
+  left_join(., pheno_blues, by = c("id" = "geno_id")) %>%
   column_to_rownames("id") %>%
   as.matrix()
 
-# Recalculate flowering interval
-pheno_add[,"FlwInterval"] <- pheno_add[,"DaysToSecFlw"] - pheno_add[,"DaysToFlw"]
-
-# Add reflowering as a binary trait
-pheno_add <- cbind(pheno_add, ReflowerBinary = as.numeric(!is.na(pheno_add[,"FlwInterval"])))
-# Add NA if first flower is NA
-pheno_add[is.na(pheno_add[,"DaysToFlw"]), "ReflowerBinary"] <- NA
 
 cross_qtl2_map <- cross_qtl2
 cross_qtl2_map$pheno <- pheno_add
@@ -74,9 +70,6 @@ cross_qtl2_map
 # Trait names
 traits <- pheno_names(cross_qtl2_map)
 trait_labs <- neyhart::str_add_space(traits)
-# Binary traits
-binary_traits <- "ReflowerBinary"
-ols_traits <- setdiff(traits, binary_traits)
 
 # Get the map
 gmap <- insert_pseudomarkers(map = cross_qtl2_map$gmap)
@@ -105,10 +98,15 @@ cross_qtl2_map2$pheno <- cbind(cross_qtl2_map2$pheno, Crossovers = rowSums(cross
 # Calculate kinship
 kin <- calc_kinship(probs = genoprob, type = "loco")
 
-# Phenotypes for OLS
-phenos_ols <- cross_qtl2_map2$pheno
+# Phenotypes for LMM
+phenos_lmm <- cross_qtl2_map2$pheno
 # Run genomewide scan using the mixed model
-lmm_scan_out_ols <- scan1(genoprobs = genoprob, pheno = phenos_ols, kinship = kin, cores = 8)
+lmm_scan_out_ols <- scan1(genoprobs = genoprob, pheno = phenos_lmm, kinship = kin, cores = 8)
+
+# Prelim plotting
+ymx <- max(pretty(range(lmm_scan_out_ols)))
+i <- 1
+plot(lmm_scan_out_ols, map = pmap, lodcolumn = i, main = colnames(phenos_lmm)[i], ylim = c(0, ymx))
 
 # # Compare with model without kinship
 # scan_out_ols <- scan1(genoprobs = genoprob, pheno = phenos_ols, cores = 8)
@@ -129,11 +127,67 @@ lmm_scan_out_ols <- scan1(genoprobs = genoprob, pheno = phenos_ols, kinship = ki
 # # Merge
 # scan1_ans <- cbind(lmm_scan_out_ols, lmm_scan_out_bin)
 
-scan1_ans <- lmm_scan_out_ols
-
 # Run a permutation test
-scan1_ans_perm <- scan1perm(genoprobs = genoprob, pheno = phenos_ols, kinship = kin, reml = TRUE, n_perm = 10000, cores = 12)
+scan1_ans_perm <- scan1perm(genoprobs = genoprob, pheno = phenos_lmm, kinship = kin, reml = TRUE, n_perm = 1000, cores = 12)
 (scan1_ans_perm_thresholds <- summary(scan1_ans_perm, alpha = c(0.01, 0.05, 0.10, 0.20)))
+
+
+## Run chisq tests for categorical traits
+cat_traits <- names(pheno_cat)[-1:-2]
+cat_scan_out <- list()
+for (trt in cat_traits) {
+  dat <- pheno_cat[c("geno_id", "year", trt)]
+  dat <- dat[!is.na(dat[[trt]]), ]
+  dat <- subset(dat, geno_id %in% row.names(genoprob[[1]]))
+  dat <- as.data.frame(dat)
+  if (length(unique(dat$year)) == 1) {
+    dat <- dat[c("geno_id", trt)]
+  }
+
+  # Index of rows in genoprobs to merge with dat
+  idx <- match(x = dat$geno_id, table = row.names(genoprob[[1]]))
+  dat <- dat[-1]
+
+  form <- reformulate(termlabels = ".", response = trt)
+
+  # fit the base model
+  fit0 <- nnet::multinom(formula = form, data = dat, maxit = 500)
+
+  scores_out <- NULL
+
+  # Iterate over chromosome
+  for (i in seq_along(genoprob)) {
+    genoprob_i <- genoprob[[i]]
+    scores_out_i <- matrix(0, nrow = dim(genoprob_i)[[3]], dimnames = list(dimnames(genoprob_i)[[3]], trt))
+    for (j in seq_len(dim(genoprob_i)[[3]])) {
+      # print(j)
+      probs <- genoprob_i[idx,,j]
+      dat_j <- cbind(dat, probs)
+      out <- capture.output(fit <- nnet::multinom(formula = form, data = dat_j))
+      # LRT
+      lrt <- anova(fit,  fit0)
+      # record the score
+      scores_out_i[j,] <- -log10(lrt$`Pr(Chi)`[2])
+    }
+    scores_out <- rbind(scores_out, scores_out_i)
+  }
+
+  # Add to the list
+  cat_scan_out_list[[trt]] <- list(score = scores_out, sample.size = length(unique(idx)))
+
+}
+
+# Bind columns
+cat_scan_ans <- do.call(cbind, lapply(cat_scan_out_list, "[[", "score"))
+attr(cat_scan_ans, "hsq") <- matrix(NA, nrow = length(genoprob), ncol = length(cat_scan_out_list), dimnames = list(seq_along(genoprob), names(cat_scan_out_list)))
+attr(cat_scan_ans, "sample_size") <- do.call(c, lapply(cat_scan_out_list, "[[", "sample.size"))
+class(cat_scan_ans) <- c("scan1", "matrix")
+
+# Add to the scan output
+
+scan1_ans <- lmm_scan_out_ols
+scan1_ans <- cbind(scan1_ans, cat_scan_ans)
+colnames(scan1_ans)
 
 
 # Save
@@ -144,10 +198,12 @@ load(save_file)
 
 # Plot
 (trait_names <- colnames(scan1_ans))
-i = 6
+i = 10
 trt <- trait_names[i]
-plot(scan1_ans, map = pmap, lodcolumn = i, main = trt)
-add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.05",])
+plot(scan1_ans, map = pmap, lodcolumn = i, main = trt, ylim = c(0, ymx))
+add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.05",], col = col[1])
+add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.1",], col = col[2])
+
 
 # Zoom in
 plot(scan1_ans, map = gmap, lodcolumn = i, main = trt, chr = 2)
@@ -157,17 +213,16 @@ plot(scan1_ans, map = gmap, lodcolumn = i, main = trt, chr = 2)
 
 # Estimate additive and dominance effects
 # chromosome 2 reflowering
-trt <- trait_names[2]
-chr <- "9"
-eff <- scan1coef(genoprob[,chr], phenos_ols[,trt], kinship = kin[[chr]], reml = FALSE)
-plot(eff, map = gmap, columns = 1:3)
-last_coef <- unclass(eff)[nrow(eff),] # pull out last coefficients
-for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], names(last_coef)[i], tick=FALSE, col.axis=col[i])
+i = 7
+trt <- trait_names[i]
+chr <- "5"
+eff <- scan1coef(genoprob[,chr], phenos_lmm[,trt], kinship = kin[[chr]], reml = FALSE)
+plot(eff, map = gmap, columns = 1:3, scan1_output = scan1_ans[,trt, drop = FALSE], main = trt)
 
-eff <- scan1coef(genoprob[,chr], phenos_ols[,trt], kinship = kin[[chr]], contrasts=cbind(mu=c(1,1,1), a=c(2, 1, 0), d=c(0, 1, 0)))
+eff <- scan1coef(genoprob[,chr], phenos_lmm[,trt], kinship = kin[[chr]], contrasts=cbind(mu=c(1,1,1), a=c(2, 1, 0), d=c(0, 1, 0)))
 plot(eff, map = gmap, columns = 2:3)
 last_coef <- unclass(eff)[nrow(eff),] # pull out last coefficients
-for(i in seq(along=last_coef)) axis(side=4, at=last_coef[i], names(last_coef)[i], tick=FALSE, col.axis=col[i])
+for(j in seq(along=last_coef)) axis(side=4, at=last_coef[j], names(last_coef)[j], tick=FALSE, col.axis=col[j])
 
 
 # chromosome 1 pollen viability

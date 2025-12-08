@@ -76,10 +76,12 @@ mkdir -p $NEWGENOMEDIR
 # Name of the modified ben lear fasta
 # Simply add _renamed to the file name; use the filename variable above to create the new file name
 newbenlear=${NEWGENOMEDIR}/$(basename ${BEN_LEAR_REF%".fasta"} )_renamed.fasta
-# # Use bioawk to only keep chromosomes that start with "chr" and take the reverse complement of chromosomes 1, 4, 5, 6, and 9
-# bioawk -c fastx '$name ~ /^chr/ { if ($name=="chr01" || $name=="chr04" || $name=="chr05") { print ">"$name"\n"revcomp($seq) } else { print ">"$name"\n"$seq } }' $BEN_LEAR_REF > $newbenlear
 # The ben lear chromosomes are named "Vmac_chr[##]", so just remove Vmac_ prefix
 bioawk -c fastx '$name ~ /^Vmac_chr/ { sub(/^Vmac_/, "", $name); printf ">%s\n%s\n", $name, $seq }' $BEN_LEAR_REF > $newbenlear
+# USe bioawk to take the reverse complement of chromosomes 1, 4, 5, 6, and 9
+bioawk -c fastx '{ if ($name=="chr01" || $name=="chr04" || $name=="chr05" || $name=="chr06" || $name=="chr09") { print ">"$name"\n"revcomp($seq) } else { print ">"$name"\n"$seq } }' $newbenlear > ${newbenlear}_temp.fasta
+mv ${newbenlear}_temp.fasta $newbenlear	
+
 
 # Name of the modified stevens fasta
 newstevens=${NEWGENOMEDIR}/$(basename ${STEVENS_REF%".fasta"} )_renamed.fasta
@@ -131,18 +133,18 @@ for i in ${!ref_genome_list[@]}; do
 done
 
 # Filter the nucmer alignments and create coords files
-# Filter for 1-1 alignments at least 10000 bp long
+# Filter for 1-1 alignments at least 1000 bp long
 delta_files=($NUCMER_OUT/*.delta)
 # Do not include "filter" delta files from previous runs
 delta_files=(${delta_files[@]:0})
 delta_files=(${delta_files[@]//*_filter.delta*})
 # Iterate over delta files and filter them
 for delta_file in "${delta_files[@]}"; do
-	echo "Processing $delta_file"
+	echo "\n\nProcessing $delta_file"
 	# Get the prefix (file name without path and extension)
 	prefix=$(basename "$delta_file" .delta)
-	# Filter for 1-1 alignments at least 10000 bp long
-	delta-filter -1 -l 10000 "$delta_file" > "${NUCMER_OUT}/${prefix}_filter.delta"
+	# Filter for 1-1 alignments at least 1000 bp long
+	delta-filter -1 -l 1000 "$delta_file" > "${NUCMER_OUT}/${prefix}_filter.delta"
 
 	# Create a tab-delimited coords file
 	show-coords -THrd "${NUCMER_OUT}/${prefix}_filter.delta" > "${NUCMER_OUT}/${prefix}_filter.coords"	
@@ -167,6 +169,10 @@ for i in ${!ref_genome_list[@]}; do
 	ref_genome=${ref_genome_list[$i]}
 	query_genome=${query_genome_list[$i]}
 	output_prefix=${output_prefix_list[$i]}
+
+	# Print message
+	printf "\n\nRunning SYRI for %s vs %s\n" "$(basename $ref_genome)" "$(basename $query_genome)"
+
 
 	# Get the filtered delta and coords file names
 	NUCMER_PREFIX=$NUCMER_OUT/$output_prefix
