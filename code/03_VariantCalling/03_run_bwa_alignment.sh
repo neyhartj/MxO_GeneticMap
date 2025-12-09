@@ -72,13 +72,16 @@ mkdir -p $ALIGNDIR
   
 
 ## Get a list of the cleaned FASTQ files
-FASTQFILES=$(find $FASTQDIR -name "*trim.fastq.gz")
-# Remove the suffix "_R[1,2]_001_trim.fastq.gz" to get the unique sample names
-SAMPLES=$(echo "$FASTQFILES" | sed 's/_R[1,2]_001_trim.fastq.gz//g' | sort -u)
+FASTQFILES=($(find $FASTQDIR -name "*trim.fastq.gz"))
+# hard coded for a test
+FASTQFILES=(/90daydata/gifvl_vaccinium/MxO_GeneticMap/variant_calling/cleaned_fastq_files/HC_RAPiD-Genomics_F368_RUT_189802_P001_WA12_i5-261_i7-108_S4083_L002_R1_001_trim.fastq.gz /90daydata/gifvl_vaccinium/MxO_GeneticMap/variant_calling/cleaned_fastq_files/HC_RAPiD-Genomics_F368_RUT_189802_P001_WA12_i5-261_i7-108_S4083_L002_R2_001_trim.fastq.gz /90daydata/gifvl_vaccinium/MxO_GeneticMap/variant_calling/cleaned_fastq_files/RAPiD-Genomics_F310_VAC_155005_P001_WD01_i5-42_i7-52_S488_L002_R1_001_trim.fastq.gz /90daydata/gifvl_vaccinium/MxO_GeneticMap/variant_calling/cleaned_fastq_files/RAPiD-Genomics_F310_VAC_155005_P001_WD01_i5-42_i7-52_S488_L002_R2_001_trim.fastq.gz)
+# Remove the suffix "_R[1,2]_001_trim.fastq.gz" and get the unique sample names
+# This needs to use array expansion to work properly; do not take the basename
+SAMPLES=($(printf "%s\n" "${FASTQFILES[@]}" | sed -E 's/_R[12]_001_trim\.fastq\.gz//' | sort | uniq))
 
 # Iterate over those files and align to the BenLear, Stevens, and Oxycoccos reference genomes
 # Use paired-end mode for BWA mem
-for SAMPLE in $SAMPLES; do
+for SAMPLE in ${SAMPLES[@]}; do
   # Get the FASTQ files for this sample
   fastq1file=${SAMPLE}_R1_001_trim.fastq.gz
   fastq2file=${SAMPLE}_R2_001_trim.fastq.gz
