@@ -100,6 +100,19 @@ for REFNAME in ${REFNAMES[@]}; do
     # Run genome coverage calculation in parallel
     parallel -j $NTHREADS run_genome_coverage {} ::: "${BAMFILES[@]}"
 
+    # List the coverage files generated
+    COVFILES=$(find $ALIGNDIR -name "*${REFNAME}_alignment_coverage.txt")
+    # Create header names by taking the basename of each coverage file and removing _alignment_coverage.txt
+    HEADERNAMES=$(echo $COVFILES | xargs -n1 basename | sed "s/_alignment_coverage.txt//" | tr ' ' '\n' | paste -sd'\t' -)
+
+    # Merge the coverage files using unionbedg
+    MERGEDCOVFILE=$COVERAGEDIR/MxO_${REFNAME}_genome_coverage_merged.txt
+    bedtools unionbedg -header -names $HEADERNAMES -i $COVFILES > $MERGEDCOVFILE
+
+    # Compress the file
+    gzip -f $MERGEDCOVFILE
+
+
 done
 
 
