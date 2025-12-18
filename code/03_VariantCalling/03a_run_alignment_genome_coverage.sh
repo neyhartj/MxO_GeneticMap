@@ -82,6 +82,8 @@ run_genome_coverage() {
   bedtools genomecov -bga -ibam $bamfile > $outputfile
 }
 
+# Export
+export -f run_genome_coverage
 
 
 
