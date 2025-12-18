@@ -193,9 +193,20 @@ for i in ${!ref_genome_list[@]}; do
 	# Get the base names of the reference and query genomes
 	ref_name=$(basename $ref_genome)
 	query_name=$(basename $query_genome)
+		# Detect Stevens, Ben Lear, and Oxycoccos in the names and change those names accordingly
+	if [[ $ref_name == *"Stevens"* ]]; then
+		ref_name="Stevens"
+	elif [[ $ref_name == *"BenLear"* ]]; then
+		ref_name="BenLear"
+	elif [[ $ref_name == *"Voxycoccos"* ]]; then
+		ref_name="Oxycoccos"
+	fi
+
 	echo -e "#file\tname\ttags\n${ref_genome}\t${ref_name}\n${query_genome}\t${query_name}" > $GENOME_FILE
 	SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
 	plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+	# Run again in itx mode
+	plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -itx -W 20 -H 4 -o ${SYRI_OUT}/${SYRI_PREFIX}plot_itx.png
 
 done
 
@@ -246,9 +257,21 @@ for i in ${!ref_genome_list[@]}; do
 	# Get the base names of the reference and query genomes
 	ref_name=$(basename $ref_genome)
 	query_name=$(basename $query_genome)
+	# Detect Stevens, Ben Lear, and Oxycoccos in the names and change those names accordingly
+	if [[ $ref_name == *"Stevens"* ]]; then
+		ref_name="Stevens"
+	elif [[ $ref_name == *"BenLear"* ]]; then
+		ref_name="BenLear"
+	elif [[ $ref_name == *"Voxycoccos"* ]]; then
+		ref_name="Oxycoccos"
+	fi
+
 	echo -e "#file\tname\ttags\n${ref_genome}\t${ref_name}\n${query_genome}\t${query_name}" > $GENOME_FILE
 	SYRI_OUT_FILE=${SYRI_OUT}/${SYRI_PREFIX}syri.out
 	plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -o ${SYRI_OUT}/${SYRI_PREFIX}plot.png
+	# Run again in itx mode
+	plotsr --sr $SYRI_OUT_FILE --genomes $GENOME_FILE -itx -W 20 -H 4 -o ${SYRI_OUT}/${SYRI_PREFIX}plot_itx.png
+
 
 done
 
