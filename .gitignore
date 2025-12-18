@@ -12,3 +12,4 @@ results/*
 figures/*
 data/*.RData
 data/mxo_rqtl*
+data/*.vcf.gz
