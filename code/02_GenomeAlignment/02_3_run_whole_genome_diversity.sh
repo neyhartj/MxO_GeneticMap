@@ -103,10 +103,10 @@ for i in ${!ref_genome_list[@]}; do
 
 	# Generate mpileup using bcftools and output to a compressed vcf file; use multi-threading
 	bcftools mpileup -f $ref_genome $BAM_FILE --threads $SLURM_JOB_CPUS_PER_NODE | \
-	bcftools call -mv -Oz -o $MINIMAP_OUT/${output_prefix}_variants.vcf.gz --threads $SLURM_JOB_CPUS_PER_NODE
+	bcftools call -mv -Oz -o $MINIMAP_OUT/temp_variants.vcf.gz --threads $SLURM_JOB_CPUS_PER_NODE
 
 	# Index the vcf file
-	bcftools index $MINIMAP_OUT/${output_prefix}_variants.vcf.gz
+	bcftools index $MINIMAP_OUT/temp_variants.vcf.gz
 
 	# Create a dummy VCF for the reference genome to include in pixy analysis
 	# This uses the 'header' from your query VCF but sets genotypes to 0/0
