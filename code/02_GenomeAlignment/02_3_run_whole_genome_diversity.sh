@@ -110,22 +110,21 @@ for i in ${!ref_genome_list[@]}; do
 
 	# Create a dummy VCF for the reference genome to include in pixy analysis
 	# This uses the 'header' from your query VCF but sets genotypes to 0/0
-	bcftools view -h temp_variants.vcf.gz > header.txt
+	bcftools view -h $MINIMAP_OUT/temp_variants.vcf.gz > $MINIMAP_OUT/header.txt
 	# Change the sample name in the header from '${output_prefix}.bam' to 'Reference'
-	sed 's/'${output_prefix}'.bam/Reference/' header.txt > header.txt
+	sed 's/'${output_prefix}'.bam/Reference/' $MINIMAP_OUT/header.txt > $MINIMAP_OUT/header.txt
 
 	# Create a version of the VCF where every site is 0/0 (matching the reference)
-	bcftools query -f '%CHROM\t%POS\t.\t%REF\t%ALT\t.\t.\t.\tGT\t0/0\n' temp_variants.vcf.gz | \
-	cat header.txt - | bcftools view -Oz -o dummy.vcf.gz
+	bcftools query -f '%CHROM\t%POS\t.\t%REF\t%ALT\t.\t.\t.\tGT\t0/0\n' $MINIMAP_OUT/temp_variants.vcf.gz | \
+	cat $MINIMAP_OUT/header.txt - | bcftools view -Oz -o dummy.vcf.gz
 	bcftools index dummy.vcf.gz
 
 	# Combine the real VCF and the dummy reference VCF
-	bcftools merge dummy.vcf.gz temp_variants.vcf.gz -Oz -o ${output_prefix}_variants.vcf.gz
+	bcftools merge dummy.vcf.gz $MINIMAP_OUT/temp_variants.vcf.gz -Oz -o ${output_prefix}_variants.vcf.gz
 	bcftools index ${output_prefix}_variants.vcf.gz
 
 	# Remove dummy and temp
-	rm dummy.vcf.gz* temp_variants.vcf.gz* header.txts
-
+	rm dummy.vcf.gz* $MINIMAP_OUT/temp_variants.vcf.gz* $MINIMAP_OUT/header.txts
 	# Create a populations file for pixy
 	# The VCF will contain a single sample with the name output_prefix.bam
 	echo -e "${output_prefix}.bam\tQUERY\nREFERENCE\tRef" > $MINIMAP_OUT/populations.txt
