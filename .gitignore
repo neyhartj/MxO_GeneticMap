@@ -6,6 +6,7 @@
 analysis/*
 code/mxo_final/*
 code/old/*
+code/private_breeding_code/*
 data_raw/*
 old_variant_calling_results/*
 results/*
@@ -13,3 +14,4 @@ figures/*
 data/*.RData
 data/mxo_rqtl*
 data/*.vcf.gz
+

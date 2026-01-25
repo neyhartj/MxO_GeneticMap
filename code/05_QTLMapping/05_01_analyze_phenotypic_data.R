@@ -64,6 +64,7 @@ pheno3 <- pheno2 %>%
 # Trait names
 all_traits <- grep(pattern = "^[A-Z]", x = names(pheno3), ignore.case = FALSE, value = TRUE)
 all_traits <- setdiff(all_traits, "ReFlw")
+all_traits
 
 # Classify traits
 all_traits_type <- sapply(pheno3[all_traits], class)

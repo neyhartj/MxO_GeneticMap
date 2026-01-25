@@ -24,18 +24,13 @@ track_list <- map(cov_files, ~{
   track_data_gr <- GRanges(track_data)
 
   genome <- sub(pattern = "_alignment", replacement = "", x = str_extract(basename(.x), "[A-Za-z]{1,}_alignment"))
-  DataTrack(track_data_gr, genome = genome, name = basename(.x))
+
+  genome_col <- ifelse(genome == "Stevens", "firebrick", "steelblue")
+  DataTrack(track_data_gr, genome = genome, name = basename(.x), col = genome_col, group = genome)
 
 })
 
+plotTracks(track_list, chromosome = "chr03")
 
-plotTracks(track_list, chromosome = "chr12", col = "firebrick", )
 
-# Plot as a line or area plot
-track_data %>%
-  filter(chr == "chr12") %>%
-  ggplot(aes(x=start, y=depth)) +
-  geom_area(fill="steelblue", alpha=1) +
-  theme_classic() +
-  labs(x="Genomic Position", y="Depth")
 

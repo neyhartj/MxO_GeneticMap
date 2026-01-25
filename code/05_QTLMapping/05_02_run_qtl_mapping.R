@@ -59,7 +59,10 @@ rm(cross_qtl2)
 
 
 
-# Use R/qtl ---------------------------------------------------------------
+# Run genome scans using R/qtl -------------------------------------------------------------
+
+## Stevens X Oxy ----------------------------------------------------------
+
 
 # Find duplicate individuals
 cg <- comparegeno(cross = cross_qtl_STxOxy)
@@ -67,18 +70,12 @@ cg_dup <- which(cg > 0.99, arr=TRUE)
 cg_dup <- cg_dup[cg_dup[,1] < cg_dup[,2],]
 cg_dup
 
-cross_qtl_STxOxy <- subset(x = cross_qtl_STxOxy, ind = -cg_dup[,2])
+cross_qtl_STxOxy1 <- subset(x = cross_qtl_STxOxy, ind = -cg_dup[,2])
 
 # Calcuate genotype probabilities
-cross_qtl_STxOxy <- calc.genoprob(cross = cross_qtl_STxOxy, error.prob = 0.03, map.function = "kosambi")
-# Add crossovers
-cross_qtl_STxOxy$pheno <- cbind(cross_qtl_STxOxy$pheno, Crossovers = countXO(cross_qtl_STxOxy))
+cross_qtl_STxOxy1 <- calc.genoprob(cross = cross_qtl_STxOxy1, error.prob = 0.06, map.function = "kosambi")
 
-probs <- calc_genoprob(cross = cross_qtl2_STxOxy)
-kin <- calc_kinship(probs = probs, type = "loco")
-
-
-pheno <- pull.pheno(cross_qtl_STxOxy)
+pheno <- pull.pheno(cross_qtl_STxOxy1)
 pheno_add <- select(pheno_cat, id = geno_id, year, ReFlwBin) %>%
   group_by(id, year) %>%
   slice(1) %>%
@@ -89,77 +86,184 @@ pheno1 <- pheno %>%
   rownames_to_column("id") %>%
   left_join(., pheno_add) %>%
   column_to_rownames("id")
-cross_qtl_STxOxy$pheno <- pheno1
+cross_qtl_STxOxy1$pheno <- pheno1
 
-pheno <- pull.pheno(cross_qtl_STxOxy)
+pheno <- pull.pheno(cross_qtl_STxOxy1)
 (traits <- colnames(pheno))
-i <- 9
-(trt <- traits[i])
 
-# Run scan1
-scan_ans <- scanone(cross = cross_qtl_STxOxy, pheno.col = i, method = "hk")
-plot(scan_ans, main = trt)
 
-binary <- all(na.omit(unique(pull.pheno(cross = cross_qtl_STxOxy, pheno.col = trt))) %in% c(0, 1))
-if (binary) {
-  cim_scan_ans <- scanone(cross = cross_qtl_STxOxy, pheno.col = i, method = "hk", model = "binary")
-} else {
-  cim_scan_ans <- cim(cross = cross_qtl_STxOxy, n.marcovar = 5, pheno.col = trt, method = "hk", window = 10)
+# List of traits to run via the binary model versus CIM
+is_binary <- sapply(pheno, function(x) all(na.omit(x) %in% c(0, 1)))
+cim_traits <- names(is_binary)[!is_binary]
+binary_traits <- names(is_binary)[is_binary]
+
+# Run the single QTL genomewide scan
+scan_ans <- NULL
+# Iterate over traits
+for (i in seq_along(traits)) {
+  trt <- traits[i]
+  # Print
+  cat("\nRunning single QTL scan for trait", trt)
+  # CIM or binary?
+  if (trt %in% cim_traits) {
+    # ans <- cim(cross = cross_qtl_STxOxy1, n.marcovar = 5, pheno.col = trt, method = "hk", window = 10)
+    ans <- scanone(cross = cross_qtl_STxOxy1, pheno.col = trt, method = "hk")
+
+  } else {
+    ans <- scanone(cross = cross_qtl_STxOxy1, pheno.col = trt, method = "hk", model = "binary")
+  }
+  colnames(ans)[3] <- trt
+  # Bind to the output
+  if (i == 1) {
+    scan_ans <- ans
+  } else {
+    scan_ans <- cbind(scan_ans, ans)
+  }
 }
-plot(cim_scan_ans,  main = trt)
-# plot(cim_scan_ans,  main = trt, chr = 9)
 
 
-# Run lmm scan1
-lmm_scan_ans <- scan1(genoprobs = probs, kinship = kin, pheno = pheno[,trt, drop = FALSE])
-plot(lmm_scan_ans, map = cross_qtl2_STxOxy$pmap, col = col[1], ylim = c(0, 14), main = trt)
+# Run the permutation test for the single QTL scan
+n_perm <- 1000
+scan_perm <- NULL
+# Iterate over traits
+for (i in seq_along(traits)) {
+  trt <- traits[i]
+  # Print
+  cat("\nRunning the permutation test for trait", trt)
+  # normal or binary model
+  model <- if (trt %in% cim_traits) "normal" else "binary"
+  operm <- scanone(cross = cross_qtl_STxOxy1, pheno.col = trt, method = "hk", n.perm = n_perm, n.cluster = 12, model = model)
+  colnames(operm)[1] <- trt
+  # Bind to the output
+  if (i == 1) {
+    scan_perm <- operm
+  } else {
+    scan_perm <- cbind(scan_perm, operm)
+  }
+}
 
 
-## Plot all
-scan_ans1 <- qtl2convert::scan_qtl_to_qtl2(scanone_output = scan_ans)
-cim_scan_ans1 <- qtl2convert::scan_qtl_to_qtl2(scanone_output = cim_scan_ans)
+# Convert the scan to qtl2 format
+scan_ans_qtl2 <- qtl2convert::scan_qtl_to_qtl2(scanone_output = scan_ans)
+scan_ans1 <- scan_ans_qtl2$scan1
+# Compute thresholds
+scan_thresh <- summary(object = scan_perm, alpha = c(0.01, 0.05, 0.10, 0.20))
+
+pmap <- cross_qtl2_STxOxy$pmap
 
 
-plot(lmm_scan_ans, map = cross_qtl2_STxOxy$pmap, col = col[1], ylim = c(0, 14), main = trt)
-plot(scan_ans1$scan1, map = cross_qtl2_STxOxy$pmap, add = TRUE, col = col[2])
-plot(cim_scan_ans1$scan1, map = cross_qtl2_STxOxy$pmap, add = TRUE, col = col[3])
-legend("topleft", col = col, legend = c("LMM", "HK", "CIM"), lwd = 2)
+## Plot the results of the scan1## Plot the results of the genomewide scan
+ymx <- max(pretty(c(0, max(as.numeric(scan_ans1)))))
+# Plot LOD score plots for each trait
+for (i in seq_len(ncol(scan_ans1))) {
+  trt <- colnames(scan_ans1)[i]
 
-# Get peaks from CIM
-peaks_gmap <- find_peaks(scan1_output = cim_scan_ans1$scan1, map = cross_qtl2_STxOxy$gmap, threshold = 4, peakdrop = 1.5, drop = 1.5)
-peaks_pmap <- find_peaks(scan1_output = cim_scan_ans1$scan1, map = cross_qtl2_STxOxy$pmap, threshold = 4, peakdrop = 1.5, drop = 1.5)
+  dat <- cbind(map2table(pmap), lod = scan_ans1[,trt])
+  thresh_df <- scan_thresh[,trt]
+  thresh_df <- data.frame(alpha = as.factor(c(0.01, 0.05, 0.10, 0.20)), lod_thresh = thresh_df, row.names = NULL)
+  thresh_df <- subset(thresh_df, alpha %in% c(0.05, 0.10))
+
+  g <- dat %>%
+    ggplot(aes(x = pos, y = lod, color = chr)) +
+    geom_line() +
+    geom_hline(data = thresh_df, aes(yintercept = lod_thresh, lty = alpha)) +
+    facet_grid(. ~ chr, scales = "free_x", switch = "x") +
+    scale_y_continuous(name = "LOD score", breaks = pretty, limits = c(0, ymx)) +
+    scale_x_continuous(name = "Physical position", breaks = pretty) +
+    scale_color_manual(values = rep(col[1:2], length.out = nchr(cross_qtl_STxOxy1)), guide = "none") +
+    scale_linetype_discrete(name = "LOD threshold") +
+    labs(subtitle = trt) +
+    theme_classic() +
+    theme(panel.spacing.x = unit(0, "line"), strip.background.x = element_blank(), strip.placement = "outside",
+          axis.ticks.x = element_blank(), axis.text.x = element_blank(), legend.position = c(0.05, 0.95), legend.justification = c(0, 1))
+
+
+  filename <- file.path(fig_dir, paste0("scan1_plot_", trt, ".jpg"))
+  ggsave(filename = filename, plot = g, width = 8, height = 5, dpi = 300)
+
+  # jpeg(filename = filename, width = 8, height = 5, units = "in", res = 300)
+  # plot(scan1_ans, map = pmap, lodcolumn = i, main = trt, ylim = c(0, ymx))
+  # add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.05", i], col = col[1])
+  # add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.1", i], col = col[2])
+  # legend(x = "topleft", legend = c("0.05", "0.10"), title = "P value threshold", col = col[1:2], lwd = 3)
+  # dev.off()
+
+}
+
+
+
+
+# Get peaks
+peaks_gmap <- find_peaks(scan1_output = scan_ans1, map = cross_qtl2_STxOxy$gmap, threshold = scan_thresh["5%",], peakdrop = 1.5, drop = 1.5)
+peaks_pmap <- find_peaks(scan1_output = scan_ans1, map = cross_qtl2_STxOxy$pmap, threshold = scan_thresh["5%",], peakdrop = 1.5, drop = 1.5)
 peaks_pmap
 
-# Fit a model
-qtl <- makeqtl(cross = cross_qtl_STxOxy, chr = peaks_gmap$chr, pos = peaks_gmap$pos, what = "prob")
-formula <- reformulate(qtl$altname, response = "y")
+# Fit a model for each trait
+fitted_qtl <- split(peaks_gmap, peaks_gmap$lodcolumn)
+for (i in seq_along(fitted_qtl)) {
+  peaks_i <- fitted_qtl[[i]]
+  trt <- unique(peaks_i$lodcolumn)
+  cat("\nFitting the QTL model for trait", trt)
 
-# stepwise selection
-step_qtl <- stepwiseqtl(cross = cross_qtl_STxOxy, pheno.col = trt, max.qtl = 4, method = "hk", qtl = qtl,
-                        refine.locations = TRUE)
-step_qtl
-formula <- formula(step_qtl)
+  # Binary or normal trait
+  if (trt %in% binary_traits) {
+    model <- "binary"
+  } else {
+    model <- "normal"
+  }
 
-# Fit the QTL model
-qtl_model <- fitqtl(cross = cross_qtl_STxOxy, pheno.col = trt, qtl = step_qtl, formula = y ~ Q1 + Q2 + Q3 + Q2:Q3,
-                    method = "hk", get.ests = T)
-summary(qtl_model)
+  # Make the qtl object
+  # get marker names
+  qtl_marker_names <- find.marker(cross = cross_qtl_STxOxy1, chr = peaks_i$chr, pos = peaks_i$pos)
+  qtl <- makeqtl(cross = cross_qtl_STxOxy1, chr = peaks_i$chr, pos = peaks_i$pos, what = "prob")
+
+  # Fit the initial qtl model
+  fitted_i <- fitqtl(cross = cross_qtl_STxOxy1, pheno.col = trt,  qtl = qtl, method = "hk", model = model)
+  # Drop non-significant additive effects
+  qtl1 <- dropfromqtl(qtl = qtl, index = which(fitted_i$result.drop[,"Pvalue(F)"] >= 0.05))
+  add_terms <- qtl1$altname
+
+  # If more than 1 QTL in the model, add interactions and test
+  if (nqtl(qtl1) > 1) {
+    fitted_i_int <- addint(cross = cross_qtl_STxOxy1, qtl = qtl1, pheno.col = trt, method = "hk", model = model)
+
+    # Use only significant additive and interaction effects
+    fitted_int_sig <- which(fitted_i_int$`Pvalue(F)` < 0.05)
+    if (length(fitted_int_sig) > 0) {
+      # Get the indices of the interacting QTL
+      int_sig <- row.names(fitted_i_int)[fitted_int_sig]
+      int_sig_qtl <- sapply(X = strsplit(x = int_sig, split = ":"), FUN = function(x) paste0(qtl1$altname[match(x = x, table = qtl1$name)], collapse = ":"))
+      int_terms <- unlist(int_sig_qtl)
+
+    } else {
+      int_terms <- NULL
+    }
+  }
+
+  formula <- reformulate(termlabels = c(add_terms, int_terms), response = "y")
+
+  # Fit the final qtl model
+  try_fit <- try(fitted_final <- fitqtl(cross = cross_qtl_STxOxy1, pheno.col = trt, qtl = qtl1, formula = formula, method = "hk", get.ests = TRUE, model = model) , silent = TRUE)
+  if (class(try_fit) == "try-error") {
+    formula <- reformulate(termlabels = c(add_terms), response = "y")
+    fitted_final <- fitqtl(cross = cross_qtl_STxOxy1, pheno.col = trt, qtl = qtl1, formula = formula, method = "hk", get.ests = TRUE, model = model)
+
+  }
+
+  # Get the peaks from peaks_pmap
+  peaks_pmap_i <- subset(peaks_pmap, lodcolumn == trt)
+
+  # add the qtl model to the list
+  fitted_qtl[[i]] <- list(fitted.model = fitted_final, qtl = qtl1, peaks = peaks_pmap_i)
+
+}
 
 
-find_markerpos(cross_qtl2_STxOxy, find.marker(cross = cross_qtl_STxOxy, chr = step_qtl$chr, pos = step_qtl$pos))
-
-# plot
-mar_name <- find.marker(cross = cross_qtl_STxOxy, chr = step_qtl$chr, pos = step_qtl$pos)
-cross_qtl_STxOxy_sim <- sim.geno(cross = cross_qtl_STxOxy, error.prob = 0.03)
-effectplot(cross = cross_qtl_STxOxy_sim, pheno.col = trt, mname1 = mar_name[1])
-eff_scan <- effectscan(cross_qtl_STxOxy_sim, pheno.col = trt, chr = 3, get.se = TRUE)
-
-
-plotPXG(x = cross_qtl_STxOxy, marker = mar_name[1], pheno.col = trt)
+summary(fitted_qtl$AvgSecondFrtWt$fitted.model)
 
 
 
- # Run genome scans -------------------------------------------------------------
+# Run genome scans using r/QTL2 -------------------------------------------------------------
 
 # Trait names
 traits <- pheno_names(cross_qtl2_STxOxy)
@@ -525,11 +629,27 @@ phenos_lmm <- cbind(phenos_lmm, phenos_reflw)
 # Run genomewide scan using the mixed model
 lmm_scan_out <- scan1(genoprobs = genoprob, pheno = phenos_lmm, kinship = kin, cores = 8)
 
+scan1_ans <- lmm_scan_out
+
+
+# Prelim plotting
+ymx <- max(pretty(range(scan1_ans)))
+(trait_names <- colnames(scan1_ans))
+# Plot
+i = 13
+(trt <- trait_names[i])
+plot(scan1_ans, map = pmap, lodcolumn = "PollenViability", main = "Genomewide Scan - Pollen Viability Traits", ylim = c(0, ymx), col = "black")
+plot(scan1_ans, map = pmap, lodcolumn = "TetradViability0", ylim = c(0, ymx), col = "slateblue", add = TRUE)
+plot(scan1_ans, map = pmap, lodcolumn = "TetradViability1", ylim = c(0, ymx), col = "green3", add = TRUE)
+plot(scan1_ans, map = pmap, lodcolumn = "TetradViability2", ylim = c(0, ymx), col = "firebrick", add = TRUE)
+plot(scan1_ans, map = pmap, lodcolumn = "TetradViability34", ylim = c(0, ymx), col = "violetred", add = TRUE)
+legend()
+
+
 # Run a permutation test
 scan1_ans_perm <- scan1perm(genoprobs = genoprob, pheno = phenos_lmm, kinship = kin, n_perm = 1000, cores = 12)
 (scan1_ans_perm_thresholds <- summary(scan1_ans_perm, alpha = c(0.01, 0.05, 0.10, 0.20)))
 
-scan1_ans <- lmm_scan_out
 
 
 # Prelim plotting
@@ -543,6 +663,7 @@ add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.05",], col =
 add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.1",], col = col[2])
 
 
+ymx <- 15
 # Plot LOD score plots for each trait
 for (i in seq_len(ncol(scan1_ans))) {
   trt <- colnames(scan1_ans)[i]
@@ -552,7 +673,7 @@ for (i in seq_len(ncol(scan1_ans))) {
   plot(scan1_ans, map = pmap, lodcolumn = i, main = trt, ylim = c(0, ymx))
   add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.05", i], col = col[1])
   add_threshold(map = pmap, thresholdA = scan1_ans_perm_thresholds["0.1", i], col = col[2])
-  legend(x = "topright", legend = c("0.05", "0.10"), title = "P value threshold", col = col[1:2], lwd = 3)
+  legend(x = "topleft", legend = c("0.05", "0.10"), title = "P value threshold", col = col[1:2], lwd = 3)
   dev.off()
 
 }
