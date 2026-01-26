@@ -103,31 +103,43 @@ for i in ${!ref_genome_list[@]}; do
 
 	# Generate mpileup using bcftools and output to a compressed vcf file; use multi-threading
 	bcftools mpileup -f $ref_genome $BAM_FILE --threads $SLURM_JOB_CPUS_PER_NODE | \
-	bcftools call -mv -Oz -o $MINIMAP_OUT/temp_variants.vcf.gz --threads $SLURM_JOB_CPUS_PER_NODE
+	bcftools call -m -Oz -o $MINIMAP_OUT/temp_variants.vcf.gz --threads $SLURM_JOB_CPUS_PER_NODE
 
 	# Index the vcf file
 	bcftools index $MINIMAP_OUT/temp_variants.vcf.gz
 
+	# Create a txt file with the sample name (the bam file name) to use for reheadering
+	echo -e "query" > $MINIMAP_OUT/new_sample_names.txt
+
+	# Use bcftools reheader to change the sample name to the bam file name
+	bcftools reheader -s $MINIMAP_OUT/new_sample_names.txt $MINIMAP_OUT/temp_variants.vcf.gz > $MINIMAP_OUT/temp_variants_renamed.vcf.gz
+	bcftools index $MINIMAP_OUT/temp_variants_renamed.vcf.gz
+
+
 	# Create a dummy VCF for the reference genome to include in pixy analysis
 	# This uses the 'header' from your query VCF but sets genotypes to 0/0
 	bcftools view -h $MINIMAP_OUT/temp_variants.vcf.gz > $MINIMAP_OUT/header.txt
-	# Change the sample name in the header from '${output_prefix}.bam' to 'Reference'
-	sed 's/'${output_prefix}'.bam/Reference/' $MINIMAP_OUT/header.txt > $MINIMAP_OUT/header.txt
 
 	# Create a version of the VCF where every site is 0/0 (matching the reference)
 	bcftools query -f '%CHROM\t%POS\t.\t%REF\t%ALT\t.\t.\t.\tGT\t0/0\n' $MINIMAP_OUT/temp_variants.vcf.gz | \
-	cat $MINIMAP_OUT/header.txt - | bcftools view -Oz -o dummy.vcf.gz
-	bcftools index dummy.vcf.gz
+	cat $MINIMAP_OUT/header.txt - | bcftools view -Oz -o $MINIMAP_OUT/dummy.vcf.gz
+
+	# New sample name file
+	echo -e "reference" > $MINIMAP_OUT/new_sample_names.txt
+	# Reheader the dummy VCF to have sample name 'reference'
+	bcftools reheader -s $MINIMAP_OUT/new_sample_names.txt $MINIMAP_OUT/dummy.vcf.gz > $MINIMAP_OUT/dummy_renamed.vcf.gz
+	# Index
+	bcftools index $MINIMAP_OUT/dummy_renamed.vcf.gz
 
 	# Combine the real VCF and the dummy reference VCF
-	bcftools merge dummy.vcf.gz $MINIMAP_OUT/temp_variants.vcf.gz -Oz -o ${output_prefix}_variants.vcf.gz
-	bcftools index ${output_prefix}_variants.vcf.gz
+	bcftools merge $MINIMAP_OUT/dummy_renamed.vcf.gz $MINIMAP_OUT/temp_variants_renamed.vcf.gz -Oz -o $MINIMAP_OUT/${output_prefix}_variants.vcf.gz
+	bcftools index $MINIMAP_OUT/${output_prefix}_variants.vcf.gz
 
 	# Remove dummy and temp
-	rm dummy.vcf.gz* $MINIMAP_OUT/temp_variants.vcf.gz* $MINIMAP_OUT/header.txts
+	rm $MINIMAP_OUT/dummy.vcf.gz* $MINIMAP_OUT/dummy_renamed.vcf.gz* $MINIMAP_OUT/temp_variants.vcf.gz* $MINIMAP_OUT/temp_variants_renamed.vcf.gz* $MINIMAP_OUT/header.txt
 	# Create a populations file for pixy
 	# The VCF will contain a single sample with the name output_prefix.bam
-	echo -e "${output_prefix}.bam\tQUERY\nREFERENCE\tRef" > $MINIMAP_OUT/populations.txt
+	echo -e "query\tp1\nreference\tp2" > $MINIMAP_OUT/populations.txt
 
 	# Run pixy to calculate nucleotide diversity (pi) and d_xy in 10 kb windows
 	pixy --vcf $MINIMAP_OUT/${output_prefix}_variants.vcf.gz \
